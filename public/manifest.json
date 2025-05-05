@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Kaveri Voice Assistant",
+  "version": "1.0",
+  "description": "Use voice or text to get help navigating the Kaveri Government Portal. Ask questions and get AI-powered answers instantly.",
+  "action": {
+    "default_popup": "index.html"
+  },
+
+  "permissions": ["storage"],
+  "host_permissions": ["https://kaveri.karnataka.gov.in/*"],
+  "content_scripts": [
+  {
+    "matches": ["https://kaveri.karnataka.gov.in/*"],
+    "js": ["assets/main.js"],
+    "css": ["assets/main.css"]
+  }
+]
+}
