@@ -1,1 +1,9 @@
 @import "tailwindcss" prefix(tw);
+
+.message-text > * + * {
+  margin-top: 1.5em;
+}
+
+.message-text {
+  line-height: 1.5;
+}

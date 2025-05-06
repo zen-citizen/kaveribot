@@ -26,7 +26,7 @@ export const Form = ({
         value={message}
         onChange={(e) => setMessage(e?.target?.value)}
         className="tw:w-full tw:p-2 tw:ml-2 tw:text-sm tw:h-3/4 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:resize-none"
-        placeholder="Ask a question..."
+        placeholder="Ask a question"
         onKeyDown={(event) => {
           if (formEvent.loading) return;
           if (event?.keyCode === 13 || event.code === "Enter") {
@@ -39,12 +39,15 @@ export const Form = ({
       ></textarea>
       <div className="chat-controls tw:flex tw:items-center tw:justify-between tw:p-2 tw:cursor-pointer">
         <Mic className={textValue ? "tw:hidden" : "tw:block"} id="mic-button" />
-        <SendHorizontal  onClick={(event) => {
+        <SendHorizontal
+          onClick={(event) => {
             if (formEvent.loading) return;
             sendMessage(message);
             setMessage("");
             event.preventDefault();
-          }} className={textValue ? "tw:block" : "tw:hidden"} />
+          }}
+          className={textValue ? "tw:block" : "tw:hidden"}
+        />
       </div>
     </div>
   );
