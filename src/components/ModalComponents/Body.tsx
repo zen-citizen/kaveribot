@@ -21,7 +21,7 @@ export const Body: React.FC<BodyProps> = ({
 }) => {
   return (
     <div
-      className="tw:flex-1 tw:p-4 tw:overflow-y-auto tw:max-h-[500px] tw:lg:max-h-[600px] tw:relative"
+      className="tw:flex-1! tw:p-4 tw:overflow-y-auto! tw:max-h-[500px] tw:lg:max-h-[600px] tw:relative"
       ref={chatBodyRef}
     >
       <div className="message tw:bot-message tw:flex tw:flex-col tw:gap-6 tw:w-full tw:mb-3">
