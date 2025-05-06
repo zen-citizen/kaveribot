@@ -11,6 +11,7 @@ For Extension
 2. After run build execute you will find build or dist folder, then find manifest.json file
 3. in manifest json file, change JS and CSS paths like below i mentioned
 
+**
 before :  
 "content_scripts": [
   {
@@ -18,7 +19,7 @@ before :
     "js": ["assets/main.js"], 
     "css": ["assets/main.css"]
   }
-
+**
 after :  
 "content_scripts": [
   {
