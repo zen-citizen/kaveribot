@@ -81,7 +81,7 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
 
   return (
     <div
-      className="chatbot-popup fixed bottom-20 right-4 bg-gray-100 rounded-2xl shadow-lg flex flex-col overflow-hidden max-h-[70vh] max-w-[80%] sm:max-w-[60%] md:max-w-[40%] lg:max-w-[33%] xl:max-w-[25%]"
+      className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:max-w-[80%] tw:sm:max-w-[60%] tw:md:max-w-[40%] tw:lg:max-w-[33%] tw:xl:max-w-[25%]"
     >
       <Header
         setTogglePopup={setTogglePopup}

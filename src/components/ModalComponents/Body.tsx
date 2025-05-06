@@ -21,14 +21,14 @@ export const Body: React.FC<BodyProps> = ({
 }) => {
   return (
     <div
-      className="flex-1 p-4 overflow-y-auto max-h-[500px] lg:max-h-[600px] relative"
+      className="tw:flex-1 tw:p-4 tw:overflow-y-auto tw:max-h-[500px] tw:lg:max-h-[600px] tw:relative"
       ref={chatBodyRef}
     >
-      <div className="message bot-message flex flex-col gap-5 w-full mb-3">
+      <div className="message tw:bot-message tw:flex tw:flex-col tw:gap-5 tw:w-full tw:mb-3">
         <DefaultMessage />
         {messages.current.map((message, idx) => {
           return (
-            <div key={`${message?.role}-${idx}`} className={message?.role}>
+            <div key={`${message?.role}-${idx}`} className={`tw:${message?.role}`}>
               {message.role === "user" && (
                 <UserMessage value={message.message} />
               )}

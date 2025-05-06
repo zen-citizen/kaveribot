@@ -18,14 +18,14 @@ export const Form = ({
 }: ChatInputProps) => {
   const textValue = inputRef.current?.value.trim();
   return (
-    <div className="w-full flex flex-row items-center bg-white h-13">
+    <div className="tw:w-full tw:flex tw:flex-row tw:items-center tw:bg-white tw:h-13">
       <textarea
         ref={inputRef}
         autoFocus
         id="chat-input"
         value={message}
         onChange={(e) => setMessage(e?.target?.value)}
-        className="w-full p-2 ml-2 text-sm h-3/4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+        className="tw:w-full tw:p-2 tw:ml-2 tw:text-sm tw:h-3/4 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:resize-none"
         placeholder="Ask a question..."
         onKeyDown={(event) => {
           if (formEvent.loading) return;
@@ -37,14 +37,14 @@ export const Form = ({
         }}
         disabled={formEvent.loading}
       ></textarea>
-      <div className="chat-controls flex items-center justify-between p-2 cursor-pointer">
-        <Mic className={textValue ? "hidden" : "block"} id="mic-button" />
+      <div className="chat-controls tw:flex tw:items-center tw:justify-between tw:p-2 tw:cursor-pointer">
+        <Mic className={textValue ? "tw:hidden" : "tw:block"} id="mic-button" />
         <SendHorizontal  onClick={(event) => {
             if (formEvent.loading) return;
             sendMessage(message);
             setMessage("");
             event.preventDefault();
-          }} className={textValue ? "block" : "hidden"} />
+          }} className={textValue ? "tw:block" : "tw:hidden"} />
       </div>
     </div>
   );
