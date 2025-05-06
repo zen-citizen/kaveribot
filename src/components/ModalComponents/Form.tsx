@@ -18,14 +18,14 @@ export const Form = ({
 }: ChatInputProps) => {
   const textValue = inputRef.current?.value.trim();
   return (
-    <div className="tw:w-full tw:flex tw:flex-row tw:items-center tw:bg-white tw:h-13">
+    <div className="tw:w-full! tw:flex! tw:flex-row! tw:items-center! tw:bg-white tw:h-13">
       <textarea
         ref={inputRef}
         autoFocus
         id="chat-input"
         value={message}
         onChange={(e) => setMessage(e?.target?.value)}
-        className="tw:w-full tw:p-2 tw:ml-2 tw:text-sm tw:h-3/4 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:resize-none"
+        className="tw:w-full tw:p-2 tw:ml-2! tw:text-sm tw:h-3/4 tw:rounded-md tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500 tw:resize-none!"
         placeholder="Ask a question..."
         onKeyDown={(event) => {
           if (formEvent.loading) return;
