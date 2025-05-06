@@ -1,28 +1,17 @@
-To run:
+## To run (for local development):
 
 1. `npm install`
 2. `npm run dev`
-3. Open the localhost
+3. Open localhost
 
-Change the model from the top-right of the page.
+## To build for extension:
 
-For Extension
-1. npm run build
-2. After run build execute you will find build or dist folder, then find manifest.json file
-3. in manifest json file, change JS and CSS paths like below i mentioned
+1. `npm run build`
 
-  1.  before :
-      "content_scripts": [
-      {
-      "matches": ["https://kaveri.karnataka.gov.in/*"],
-      "js": ["assets/main.js"], 
-      "css": ["assets/main.css"]
-      }]
+## To use the extension:
 
-3.  after :  
-    "content_scripts": [
-    {
-    "matches": ["https://kaveri.karnataka.gov.in/*"],
-    "js": ["assets/main-BZUoYmKX.js"],   (check assets folder and change accordingly what js file name has)
-    "css": ["assets/main-uAAb-Dbe.css"]  (check assets folder and change accordingly what css file name has)
-    }]
+- Open Chrome
+- From settings, go to `Extensions -> Manage Extensions`
+- Click `Load unpacked` and select the `dist` folder in this project
+- If the extension loaded successfully, you should see `Kaveri Bot` in your extensions list.
+- Go to `kaveri.karnataka.gov.in` and you'll see the bot.
