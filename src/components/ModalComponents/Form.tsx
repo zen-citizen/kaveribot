@@ -142,6 +142,7 @@ export const Form = ({
   useEffect(() => {
     if (!isRecording && transcript) {
       setMessage(transcript);
+      setTranscript(""); // Clear transcript after setting the message
     }
   }, [isRecording, transcript, setMessage]);
 
@@ -247,106 +248,131 @@ export const Form = ({
   };
 
   return (
-    <div className="w-full flex flex-col bg-white">
+    <form
+      className="chat-input sticky bottom-0 border-t border-gray-200 p-2 bg-white"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if ((message.trim() || (isRecording && transcript.trim())) && !formEvent.loading) {
+          if (isRecording) {
+            stopRecording();
+            // Small delay to ensure transcript is processed
+            setTimeout(() => {
+              sendMessage(transcript || message);
+            }, 100);
+          } else {
+            sendMessage(message);
+          }
+        }
+      }}
+    >
       {isRecording && (
-        <div className="w-full flex items-center justify-center py-1 bg-red-50">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
-            <span className="text-xs text-red-500">Recording {formatTime(recordingTime)} in {getSelectedLanguageName()}</span>
-          </div>
+        <div className="recording-indicator flex items-center gap-2 mb-2 p-2 bg-red-50 border border-red-200 rounded-md">
+          <div className="flex-shrink-0 h-3 w-3 bg-red-500 rounded-full animate-pulse"></div>
+          <span className="text-red-500 font-medium text-sm">Recording: {formatTime(recordingTime)} in {getSelectedLanguageName()}</span>
         </div>
       )}
-      <div className="w-full flex flex-row items-center h-13">
+      
+      <div className="flex items-end relative">
         <textarea
-          ref={inputRef}
-          autoFocus
           id="chat-input"
+          className="flex-1 p-3 pr-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-32 resize-none"
+          placeholder={isRecording ? "Listening..." : "Type your message here..."}
           value={isRecording ? transcript : message}
-          onChange={(e) => !isRecording && setMessage(e?.target?.value)}
-          className="w-full p-2 ml-2 text-sm h-3/4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-          placeholder={isRecording ? "Listening..." : "Ask a question..."}
-          onKeyDown={(event) => {
-            if (formEvent.loading || isRecording) return;
-            if (event?.keyCode === 13 || event.code === "Enter") {
-              sendMessage(message);
-              setMessage("");
-              event.preventDefault();
+          onChange={(e) => !isRecording && setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey && !isRecording) {
+              e.preventDefault();
+              if (message.trim() && !formEvent.loading) {
+                sendMessage(message);
+              }
             }
           }}
-          disabled={formEvent.loading || isRecording}
-        ></textarea>
-        <div className="chat-controls flex items-center justify-between p-2 space-x-2">
-          <div className="relative" ref={dropdownRef}>
-            <button 
-              className="text-gray-500 hover:text-blue-700 p-1 rounded-md flex items-center"
-              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-              aria-label="Select language"
-            >
-              <Globe size={18} />
-              <span className="text-xs ml-1">{selectedLanguage.split('-')[0]}</span>
-            </button>
-            
-            {showLanguageDropdown && (
-              <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md py-1 z-10 w-48 max-h-60 overflow-y-auto">
-                <div className="sticky top-0 bg-gray-100 px-4 py-2 font-semibold text-xs text-gray-600">
-                  Indian Languages
+          rows={1}
+          ref={inputRef}
+          disabled={isRecording}
+          style={{
+            minHeight: "50px",
+            height: "auto",
+            maxHeight: "120px",
+          }}
+        />
+        
+        <div className="absolute right-2 bottom-2 flex gap-2">
+          {isSpeechSupported && (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                className="p-2 text-gray-500 hover:text-blue-500 focus:outline-none flex items-center"
+                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                aria-label="Select language"
+              >
+                <Globe size={18} />
+                <span className="text-xs ml-1">{selectedLanguage.split('-')[0]}</span>
+              </button>
+              
+              {showLanguageDropdown && (
+                <div className="absolute bottom-full right-0 mb-2 bg-white border border-gray-200 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto w-48">
+                  <div className="sticky top-0 bg-gray-100 px-4 py-2 font-semibold text-xs text-gray-600">
+                    Indian Languages
+                  </div>
+                  {LANGUAGES.slice(0, 13).map((lang) => (
+                    <button
+                      key={lang.code}
+                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
+                        selectedLanguage === lang.code ? "bg-blue-50 text-blue-600" : ""
+                      }`}
+                      onClick={() => handleLanguageChange(lang.code)}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                  <div className="sticky top-0 bg-gray-100 px-4 py-2 font-semibold text-xs text-gray-600">
+                    Other Languages
+                  </div>
+                  {LANGUAGES.slice(13).map((lang) => (
+                    <button
+                      key={lang.code}
+                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
+                        selectedLanguage === lang.code ? "bg-blue-50 text-blue-600" : ""
+                      }`}
+                      onClick={() => handleLanguageChange(lang.code)}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
                 </div>
-                {LANGUAGES.slice(0, 13).map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 ${
-                      selectedLanguage === lang.code ? 'bg-blue-100 font-medium' : ''
-                    }`}
-                    onClick={() => handleLanguageChange(lang.code)}
-                  >
-                    {lang.name}
-                  </button>
-                ))}
-                <div className="sticky top-0 bg-gray-100 px-4 py-2 font-semibold text-xs text-gray-600">
-                  Other Languages
-                </div>
-                {LANGUAGES.slice(13).map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 ${
-                      selectedLanguage === lang.code ? 'bg-blue-100 font-medium' : ''
-                    }`}
-                    onClick={() => handleLanguageChange(lang.code)}
-                  >
-                    {lang.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          {!isRecording && message ? (
-            <SendHorizontal onClick={(event) => {
-              if (formEvent.loading) return;
-              sendMessage(message);
-              setMessage("");
-              event.preventDefault();
-            }} className="block text-blue-500 hover:text-blue-700" />
-          ) : (
-            <>
-              {isRecording ? (
-                <MicOff 
-                  className="text-red-500 hover:text-red-700" 
-                  onClick={toggleRecording}
-                  aria-label="Stop recording"
-                />
-              ) : (
-                <Mic 
-                  className={isSpeechSupported ? "text-blue-500 hover:text-blue-700" : "text-gray-400 cursor-not-allowed"}
-                  id="mic-button" 
-                  onClick={toggleRecording}
-                  aria-label={isSpeechSupported ? "Start voice recording" : "Speech recognition not supported"}
-                />
               )}
-            </>
+            </div>
           )}
+          
+          {isSpeechSupported && (
+            <button
+              type="button"
+              className={`p-2 ${
+                isRecording ? "text-red-500" : "text-gray-500 hover:text-blue-500"
+              } focus:outline-none`}
+              onClick={toggleRecording}
+              disabled={formEvent.loading}
+              aria-label={isRecording ? "Stop recording" : "Start recording"}
+            >
+              {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
+            </button>
+          )}
+          
+          <button
+            type="submit"
+            className={`p-2 ${
+              (message.trim() || (isRecording && transcript.trim())) && !formEvent.loading
+                ? "text-blue-500 hover:text-blue-700"
+                : "text-gray-300"
+            } focus:outline-none`}
+            disabled={(!message.trim() && !(isRecording && transcript.trim())) || formEvent.loading}
+            aria-label="Send message"
+          >
+            <SendHorizontal size={18} />
+          </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };

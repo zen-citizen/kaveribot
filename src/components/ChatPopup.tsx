@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 
 import { Body, Header, Form, Footer } from "./ModalComponents/index";
@@ -79,9 +79,21 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     }, 100);
   };
 
+  // Effect to ensure popup is visible when opened
+  useEffect(() => {
+    if (togglePopup) {
+      scrollToBottom();
+      focusOnInput();
+    }
+  }, [togglePopup]);
+
   return (
     <div
-      className="chatbot-popup fixed bottom-20 right-4 bg-gray-100 rounded-2xl shadow-lg flex flex-col overflow-hidden max-h-[70vh] max-w-[80%] sm:max-w-[60%] md:max-w-[40%] lg:max-w-[33%] xl:max-w-[25%]"
+      className="chatbot-popup fixed bottom-20 right-4 bg-gray-100 rounded-2xl shadow-lg flex flex-col overflow-hidden w-[90vw] max-w-[400px] min-h-[400px] max-h-[80vh] sm:max-w-[400px] md:max-w-[450px] lg:max-w-[500px] z-50"
+      style={{ 
+        display: togglePopup ? 'flex' : 'none',
+        height: 'min(600px, 70vh)'
+      }}
     >
       <Header
         setTogglePopup={setTogglePopup}

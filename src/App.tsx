@@ -3,11 +3,11 @@ import ChatButton from "./components/ChatButton";
 import ChatPopup from "./components/ChatPopup";
 
 function App() {
-  const [togglePopup, setTogglePopup] = useState(true);
+  const [togglePopup, setTogglePopup] = useState(false);
   return (
-    <div>
+    <div className="app-container relative">
       <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} />
-      {togglePopup && <ChatPopup setTogglePopup={setTogglePopup} togglePopup={togglePopup}/>}
+      <ChatPopup setTogglePopup={setTogglePopup} togglePopup={togglePopup}/>
     </div>
   );
 }

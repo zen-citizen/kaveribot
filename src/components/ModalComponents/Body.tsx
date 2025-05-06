@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { RefObject, useEffect } from "react";
 
 import {
   ErrorMessage,
@@ -11,7 +11,7 @@ import {
 interface BodyProps {
   formEvent: { error: unknown; response: unknown; loading: boolean };
   messages: React.MutableRefObject<{ role: string; message: string }[]>;
-  chatBodyRef: RefObject<HTMLDivElement>; // ✅ Added missing prop
+  chatBodyRef: RefObject<HTMLDivElement>;
 }
 
 export const Body: React.FC<BodyProps> = ({
@@ -19,13 +19,21 @@ export const Body: React.FC<BodyProps> = ({
   messages,
   chatBodyRef,
 }) => {
+  // Scroll to bottom whenever messages change or when loading state changes
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages.current.length, formEvent.loading]);
+
   return (
     <div
-      className="flex-1 p-4 overflow-y-auto max-h-[500px] lg:max-h-[600px] relative"
+      className="flex-1 p-4 overflow-y-auto overflow-x-hidden"
       ref={chatBodyRef}
+      style={{ scrollBehavior: 'smooth' }}
     >
       <div className="message bot-message flex flex-col gap-5 w-full mb-3">
-        <DefaultMessage />
+        {messages.current.length === 0 && <DefaultMessage />}
         {messages.current.map((message, idx) => {
           return (
             <div key={`${message?.role}-${idx}`} className={message?.role}>
