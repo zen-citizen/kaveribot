@@ -1,21 +1,21 @@
 export const Footer = () => {
   return (
     <footer>
-      <div className="flex justify-between px-2 py-2 text-xs">
+      <div className="tw:flex tw:justify-between tw:px-2 tw:py-2 tw:text-xs">
         <p>
           Powered by
           <a
             href="http://zencitizen.in/"
-            className="underline-offset-2 underline ml-1"
+            className="tw:underline-offset-2 tw:underline tw:ml-1"
           >
             <b>Zen Citizen</b>
           </a>
         </p>
-        <div className="flex gap-3">
-          <a href="#" className="underline underline-offset-3">
+        <div className="tw:flex tw:gap-3">
+          <a href="#" className="tw:underline tw:underline-offset-3">
             Feedback
           </a>
-          <a href="#" className="underline underline-offset-3">
+          <a href="#" className="tw:underline tw:underline-offset-3">
             Volunteer
           </a>
         </div>

@@ -5,7 +5,7 @@ import ChatPopup from "./components/ChatPopup";
 function App() {
   const [togglePopup, setTogglePopup] = useState(true);
   return (
-    <div>
+    <div id="kaveri-bot-app">
       <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} />
       {togglePopup && <ChatPopup setTogglePopup={setTogglePopup} togglePopup={togglePopup}/>}
     </div>

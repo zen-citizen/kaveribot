@@ -2,12 +2,12 @@ import { MessageSquareMore } from "lucide-react";
 
 export const DefaultMessage = () => {
   return (
-    <div className="flex-col flex gap-1">
-      <div className="flex-row flex gap-2 items-center">
-        <MessageSquareMore className="text-blue-600" />
-        <span className="text-xs">Zen Citizen Bot</span>
+    <div className="tw:flex-col tw:flex tw:gap-1">
+      <div className="tw:flex-row tw:flex tw:gap-2 tw:items-center">
+        <MessageSquareMore className="tw:text-blue-600" />
+        <span className="tw:text-xs">Zen Citizen Bot</span>
       </div>
-      <div className="message-text text-sm text-gray-800 bg-white px-7 rounded-lg text-left tracking-wide pb-4 pt-7 leading-[22px] font-normal">
+      <div className="message-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-7 tw:rounded-lg tw:text-left tw:tracking-wide tw:pb-4 tw:pt-7 tw:leading-[22px] tw:font-normal">
         Hi! 👋
         <br />
         <br />
@@ -15,7 +15,7 @@ export const DefaultMessage = () => {
         <a
           href="https://zencitizen.in"
           target="_blank"
-          className="text-blue-600 font-semibold"
+          className="tw:text-blue-600 tw:font-semibold"
         >
           Zen Citizen
         </a>
@@ -27,7 +27,7 @@ export const DefaultMessage = () => {
         <em> We plan to expand to more services soon.</em>
         <br />
         <br />
-        <span className="text-xs font-medium tracking-normal text-gray-500 leading-[2px]">
+        <span className="tw:text-xs tw:font-medium tw:tracking-normal tw:text-gray-500 tw:leading-[2px]">
           AI is occasionally inaccurate. Always verify important information.
         </span>
       </div>

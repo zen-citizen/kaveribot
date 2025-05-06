@@ -10,16 +10,16 @@ export const Header = ({
   togglePopup,
 }: BodyProps) => {
   return (
-    <header className="chat-header flex justify-between items-center border-b border-gray-200 px-4 py-3 bg-black">
-      <div className="header-info flex items-center gap-3">
-        <CircleEllipsis className="text-white" size={40} strokeWidth={1.5} />
-        <h2 className="logo-text text-md font-semibold text-white text-underline">
+    <header className="chat-header tw:flex tw:justify-between tw:items-center tw:border-b tw:border-gray-200 tw:px-4 tw:py-3 tw:bg-black">
+      <div className="header-info tw:flex tw:items-center tw:gap-3">
+        <CircleEllipsis className="tw:text-white" size={40} strokeWidth={1.5} />
+        <h2 className="logo-text tw:text-md tw:font-semibold tw:text-white tw:text-underline">
           Ask Zen Citizen
         </h2>
-        <span className="bg-gray-200 border px-2 rounded-md text-[#013df5]">Beta</span>
+        <span className="tw:bg-gray-200 tw:border tw:px-2 tw:rounded-md tw:text-[#013df5]">Beta</span>
       </div>
       <ChevronDown
-        className="text-white cursor-pointer"
+        className="tw:text-white tw:cursor-pointer"
         onClick={() => setTogglePopup(!togglePopup)}
       />
     </header>
