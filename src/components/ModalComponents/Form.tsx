@@ -1,4 +1,4 @@
-import { Mic, MicOff, SendHorizontal } from "lucide-react";
+import { Mic, MicOff, SendHorizontal, Globe } from "lucide-react";
 import { RefObject, useState, useEffect, useRef } from "react";
 
 interface ChatInputProps {
@@ -9,6 +9,29 @@ interface ChatInputProps {
   formEvent: { error: unknown; response: unknown; loading: boolean };
   inputRef: RefObject<HTMLTextAreaElement>;
 }
+
+// Supported languages for speech recognition with focus on Indian languages
+const LANGUAGES = [
+  { code: 'en-IN', name: 'English (India)' },
+  { code: 'hi-IN', name: 'Hindi' },
+  { code: 'kn-IN', name: 'Kannada' },
+  { code: 'bn-IN', name: 'Bengali' },
+  { code: 'ta-IN', name: 'Tamil' },
+  { code: 'te-IN', name: 'Telugu' },
+  { code: 'ml-IN', name: 'Malayalam' },
+  { code: 'mr-IN', name: 'Marathi' },
+  { code: 'ur-IN', name: 'Urdu' },
+  { code: 'gu-IN', name: 'Gujarati' },
+  { code: 'pa-IN', name: 'Punjabi' },
+  { code: 'or-IN', name: 'Odia' },
+  { code: 'as-IN', name: 'Assamese' },
+  // Other international languages
+  { code: 'en-US', name: 'English (US)' },
+  { code: 'zh-CN', name: 'Chinese' },
+  { code: 'ja-JP', name: 'Japanese' },
+  { code: 'ar-SA', name: 'Arabic' }
+];
+
 export const Form = ({
   message,
   sendMessage,
@@ -21,14 +44,38 @@ export const Form = ({
   const [recordingTime, setRecordingTime] = useState(0);
   const [transcript, setTranscript] = useState("");
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en-IN');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Click outside handler for dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowLanguageDropdown(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Initialize speech recognition on mount
   useEffect(() => {
+    initializeSpeechRecognition();
+  }, [selectedLanguage]);
+
+  const initializeSpeechRecognition = () => {
     if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognitionInstance = new SpeechRecognition();
+      
+      // Configure recognition
       recognitionInstance.continuous = true;
       recognitionInstance.interimResults = true;
+      recognitionInstance.lang = selectedLanguage;
       
       recognitionInstance.onresult = (event) => {
         const currentTranscript = Array.from(event.results)
@@ -61,8 +108,10 @@ export const Form = ({
     } else {
       setIsSpeechSupported(false);
     }
-    
-    // Cleanup function
+  };
+
+  // Cleanup function for recognition
+  useEffect(() => {
     return () => {
       if (recognitionRef.current) {
         try {
@@ -74,7 +123,7 @@ export const Form = ({
         }
       }
     };
-  }, []);
+  }, [isRecording]);
 
   // Recording timer
   useEffect(() => {
@@ -134,10 +183,14 @@ export const Form = ({
     try {
       setMessage(""); // Clear message when starting new recording
       setTranscript(""); // Clear transcript when starting new recording
+      
+      // Make sure language is set correctly before starting
+      recognitionRef.current.lang = selectedLanguage;
       recognitionRef.current.start();
+      
       setIsRecording(true);
       playAudioFeedback('start');
-      console.log("Recording started");
+      console.log("Recording started in language:", selectedLanguage);
     } catch (error) {
       console.error("Error starting recording:", error);
       alert("Error starting speech recognition. Please try again.");
@@ -184,13 +237,22 @@ export const Form = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const handleLanguageChange = (langCode: string) => {
+    setSelectedLanguage(langCode);
+    setShowLanguageDropdown(false);
+  };
+
+  const getSelectedLanguageName = () => {
+    return LANGUAGES.find(lang => lang.code === selectedLanguage)?.name || 'English (India)';
+  };
+
   return (
     <div className="w-full flex flex-col bg-white">
       {isRecording && (
         <div className="w-full flex items-center justify-center py-1 bg-red-50">
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
-            <span className="text-xs text-red-500">Recording {formatTime(recordingTime)}</span>
+            <span className="text-xs text-red-500">Recording {formatTime(recordingTime)} in {getSelectedLanguageName()}</span>
           </div>
         </div>
       )}
@@ -213,7 +275,51 @@ export const Form = ({
           }}
           disabled={formEvent.loading || isRecording}
         ></textarea>
-        <div className="chat-controls flex items-center justify-between p-2 cursor-pointer">
+        <div className="chat-controls flex items-center justify-between p-2 space-x-2">
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              className="text-gray-500 hover:text-blue-700 p-1 rounded-md flex items-center"
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+              aria-label="Select language"
+            >
+              <Globe size={18} />
+              <span className="text-xs ml-1">{selectedLanguage.split('-')[0]}</span>
+            </button>
+            
+            {showLanguageDropdown && (
+              <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md py-1 z-10 w-48 max-h-60 overflow-y-auto">
+                <div className="sticky top-0 bg-gray-100 px-4 py-2 font-semibold text-xs text-gray-600">
+                  Indian Languages
+                </div>
+                {LANGUAGES.slice(0, 13).map((lang) => (
+                  <button
+                    key={lang.code}
+                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 ${
+                      selectedLanguage === lang.code ? 'bg-blue-100 font-medium' : ''
+                    }`}
+                    onClick={() => handleLanguageChange(lang.code)}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+                <div className="sticky top-0 bg-gray-100 px-4 py-2 font-semibold text-xs text-gray-600">
+                  Other Languages
+                </div>
+                {LANGUAGES.slice(13).map((lang) => (
+                  <button
+                    key={lang.code}
+                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 ${
+                      selectedLanguage === lang.code ? 'bg-blue-100 font-medium' : ''
+                    }`}
+                    onClick={() => handleLanguageChange(lang.code)}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          
           {!isRecording && message ? (
             <SendHorizontal onClick={(event) => {
               if (formEvent.loading) return;
@@ -227,14 +333,14 @@ export const Form = ({
                 <MicOff 
                   className="text-red-500 hover:text-red-700" 
                   onClick={toggleRecording}
-                  title="Stop recording"
+                  aria-label="Stop recording"
                 />
               ) : (
                 <Mic 
                   className={isSpeechSupported ? "text-blue-500 hover:text-blue-700" : "text-gray-400 cursor-not-allowed"}
                   id="mic-button" 
                   onClick={toggleRecording}
-                  title={isSpeechSupported ? "Start voice recording" : "Speech recognition not supported"}
+                  aria-label={isSpeechSupported ? "Start voice recording" : "Speech recognition not supported"}
                 />
               )}
             </>
