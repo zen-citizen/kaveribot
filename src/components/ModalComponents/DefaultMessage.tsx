@@ -11,7 +11,7 @@ export const DefaultMessage = () => {
           <a
             href="https://zencitizen.in"
             target="_blank"
-            className="tw:text-blue-600 tw:font-semibold tw:underline tw:underline-offset-2"
+            className="tw:text-blue-600 tw:font-semibold tw:underline tw:underline-offset-2 tw:hover:opacity-85 tw:transition-opacity"
           >
             Zen Citizen
           </a>{" "}
