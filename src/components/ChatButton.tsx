@@ -11,7 +11,7 @@ const ChatButton = ({ togglePopup, setTogglePopup }: ChatButtonProps) => {
     <button
       id="chatbot-toggler"
       onClick={() => setTogglePopup(!togglePopup)}
-      className="tw:fixed tw:bottom-4 tw:right-4 tw:bg-blue-600! tw:text-white! tw:p-4 tw:rounded-full! tw:shadow-lg! tw:focus:outline-none! tw:cursor-pointer"
+      className="tw:fixed tw:bottom-4 tw:right-4 tw:bg-[#003df5]! tw:text-white! tw:p-4 tw:rounded-full! tw:shadow-lg! tw:focus:outline-none! tw:cursor-pointer"
     >
       {IconToggle}
     </button>

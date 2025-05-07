@@ -1,21 +1,29 @@
 export const Footer = () => {
   return (
     <footer>
-      <div className="tw:flex! tw:justify-between! tw:px-2 tw:py-2 tw:text-xs">
-        <div>
-          Powered by
+      <div className="tw:flex! tw:justify-between! tw:px-4 tw:py-3 tw:text-xs tw:text-gray-500">
+        <p>
+          Powered by{" "}
           <a
             href="http://zencitizen.in/"
-            className="tw:underline-offset-2! tw:underline! tw:ml-1"
+            target="_blank"
+            className="tw:underline-offset-2! tw:underline! tw:hover:opacity-85 tw:transition-opacity"
           >
             <b>Zen Citizen</b>
           </a>
-        </div>
+        </p>
         <div className="tw:flex tw:gap-3">
-          <a href="#" className="tw:underline! tw:underline-offset-3!">
+          <a
+            href="#"
+            className="tw:underline! tw:underline-offset-3! tw:hover:opacity-85 tw:transition-opacity"
+          >
             Feedback
           </a>
-          <a href="#" className="tw:underline! tw:underline-offset-3!">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLScQS_-VgUFQZJedyu6iIlpoYymsKSyGUhrvPoJX1WkZGQqfLQ/viewform"
+            target="_blank"
+            className="tw:underline! tw:underline-offset-3! tw:hover:opacity-85 tw:transition-opacity"
+          >
             Volunteer
           </a>
         </div>
