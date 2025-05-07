@@ -49,73 +49,6 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const [message, setMessage] = useState("");
   const messages = useRef<MessageType[]>([]);
   const inputRef = useRef(null);
-  const [showTrimNotification, setShowTrimNotification] = useState(false);
-  // Maximum storage size in bytes (approximately 8MB)
-  const MAX_STORAGE_SIZE = 8 * 1024 * 1024;
-
-  // Load messages from localStorage on initial render
-  useEffect(() => {
-    loadMessagesFromLocalStorage();
-    
-    // Add focus event listener to reload messages when window gets focus
-    window.addEventListener('focus', loadMessagesFromLocalStorage);
-    
-    return () => {
-      window.removeEventListener('focus', loadMessagesFromLocalStorage);
-    };
-  }, []);
-  
-  // Function to load messages from localStorage
-  const loadMessagesFromLocalStorage = () => {
-    try {
-      const savedMessages = localStorage.getItem('chatMessages');
-      if (savedMessages) {
-        messages.current = JSON.parse(savedMessages);
-        // Force a re-render after loading messages
-        setFormEvent(prev => ({ ...prev }));
-      }
-    } catch (error) {
-      console.error("Error loading messages from localStorage:", error);
-      // If there's an error parsing, clear the storage
-      localStorage.removeItem('chatMessages');
-      messages.current = [];
-    }
-  };
-  
-  // Function to calculate the size of the messages in bytes
-  const getMessagesSize = (msgs: MessageType[]): number => {
-    return new Blob([JSON.stringify(msgs)]).size;
-  };
-  
-  // Save messages to localStorage with size management
-  const saveMessagesToLocalStorage = () => {
-    try {
-      let messagesTrimmed = false;      
-      // Then check for size and remove oldest messages until under limit
-      let currentMessages = [...messages.current];
-      while (getMessagesSize(currentMessages) > MAX_STORAGE_SIZE && currentMessages.length > 2) {
-        // Remove oldest message (start of array)
-        currentMessages = currentMessages.slice(1);
-        messagesTrimmed = true;
-      }
-      
-      // Update the messages reference if changes were made
-      if (currentMessages.length !== messages.current.length) {
-        messages.current = currentMessages;
-      }
-      
-      // Show notification if messages were trimmed
-      if (messagesTrimmed) {
-        setShowTrimNotification(true);
-        setTimeout(() => setShowTrimNotification(false), 3000);
-      }
-      
-      // Save to localStorage
-      localStorage.setItem('chatMessages', JSON.stringify(messages.current));
-    } catch (error) {
-      console.error("Error saving messages to localStorage:", error);
-    }
-  };
 
   const captureScreen = async () => {
     try {
@@ -204,9 +137,6 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     // Add to messages
     messages.current.push(newMessage);
     
-    // Save to localStorage
-    saveMessagesToLocalStorage();
-    
     // Force re-render by updating formEvent state
     setFormEvent((prev) => ({
       ...prev,
@@ -240,7 +170,6 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     focusOnInput();
     if (data) {
       messages.current.push({ message: data, role: "model" });
-      saveMessagesToLocalStorage();
       // Force another re-render to update the message list with the response
       setFormEvent(prev => ({ ...prev }));
     } else if (messages.current.length > 0) {
@@ -283,12 +212,6 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       ref={chatRef}
       className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:max-w-[80%] tw:sm:max-w-[60%] tw:md:max-w-[40%] tw:lg:max-w-[33%] tw:xl:max-w-[25%]"
     >
-      {showTrimNotification && (
-        <div className="tw:absolute tw:top-16 tw:left-0 tw:right-0 tw:bg-yellow-100 tw:text-yellow-800 tw:px-3 tw:py-2 tw:text-sm tw:text-center tw:z-50 tw:opacity-90">
-          Some older messages were removed due to storage limits.
-        </div>
-      )}
-      
       {(showFullPreview && (screenshot || previewImage)) && (
         <div className="tw:fixed tw:inset-0 tw:z-50 tw:bg-black/80 tw:flex tw:items-center tw:justify-center" onClick={() => {setShowFullPreview(false); setPreviewImage(null);}}>
           <div className="tw:max-w-[90%] tw:max-h-[90%] tw:overflow-auto">
