@@ -2,7 +2,7 @@ export const Footer = () => {
   return (
     <footer>
       <div className="tw:flex! tw:justify-between! tw:px-4 tw:py-3 tw:text-xs tw:text-gray-500">
-        <p>
+        <div>
           Powered by{" "}
           <a
             href="http://zencitizen.in/"
@@ -11,7 +11,7 @@ export const Footer = () => {
           >
             <b>Zen Citizen</b>
           </a>
-        </p>
+        </div>
         <div className="tw:flex tw:gap-3">
           <a
             href="#"

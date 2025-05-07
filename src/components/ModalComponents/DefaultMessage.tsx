@@ -1,9 +1,9 @@
 export const DefaultMessage = () => {
   return (
     <div className="tw:flex-col tw:flex tw:gap-2">
-      <p className="tw:text-gray-500 tw:text-xs tw:font-medium">
+      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
         Zen Citizen Bot
-      </p>
+      </div>
       <div className="message-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-5 tw:rounded-lg tw:text-left tw:py-4">
         <p>Hi! 👋</p>
         <p>
@@ -22,7 +22,7 @@ export const DefaultMessage = () => {
           marriage online on the Kaveri portal.
           <em> We plan to expand to more services soon.</em>
         </p>
-        <p className="tw:text-xs tw:font-medium tw:text-gray-400 tw:leading-[1.5]">
+        <p className="tw:text-xs tw:font-medium tw:text-gray-400 tw:leading-[1.5] tw:mb-0!">
           AI is occasionally inaccurate. Always verify important information.
         </p>
       </div>
