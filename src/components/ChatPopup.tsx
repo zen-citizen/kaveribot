@@ -43,8 +43,10 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const [isCaptureMode, setIsCaptureMode] = useState(false);
   const [showFullPreview, setShowFullPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [showCaptureDropdown, setShowCaptureDropdown] = useState(false);
   const apiEndpoint = "/api/chat";
   const chatRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [message, setMessage] = useState("");
   const messages = useRef<MessageType[]>([]);
@@ -52,6 +54,7 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const [showTrimNotification, setShowTrimNotification] = useState(false);
   // Maximum storage size in bytes (approximately 8MB)
   const MAX_STORAGE_SIZE = 8 * 1024 * 1024;
+  const [isDragging, setIsDragging] = useState(false);
 
   // Load messages from localStorage on initial render
   useEffect(() => {
@@ -131,9 +134,7 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       
       // Request permission to capture the screen
       const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          cursor: "always"
-        },
+        video: true,
         audio: false
       });
       
@@ -274,6 +275,73 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     }, 100);
   };
 
+  const handleFileUpload = (file: File) => {
+    if (!file) return;
+    
+    // Check if the file is an image
+    if (!file.type.match('image/jpeg') && !file.type.match('image/png') && !file.type.match('image/jpg')) {
+      alert('Please upload a valid image (JPEG, JPG or PNG)');
+      return;
+    }
+    
+    // Read the file as a data URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        setScreenshot(e.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  // Handle drag enter event
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+  
+  // Handle drag leave event
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+  
+  // Handle drop event
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+  
+  // Prevent default behavior for drag and drop events
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // Function to open the file selector
+  const openFileSelector = () => {
+    fileInputRef.current?.click();
+  };
+  
+  // Hide dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (showCaptureDropdown) {
+        setShowCaptureDropdown(false);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showCaptureDropdown]);
+
   if (isCaptureMode) {
     return null; // Don't render anything during capture mode
   }
@@ -281,8 +349,34 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   return (
     <div
       ref={chatRef}
-      className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:max-w-[80%] tw:sm:max-w-[60%] tw:md:max-w-[40%] tw:lg:max-w-[33%] tw:xl:max-w-[25%]"
+      className={`chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:max-w-[80%] tw:sm:max-w-[60%] tw:md:max-w-[40%] tw:lg:max-w-[33%] tw:xl:max-w-[25%] ${isDragging ? 'tw:ring-2 tw:ring-[#003df5] tw:ring-opacity-70' : ''}`}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
     >
+      {isDragging && (
+        <div className="tw:absolute tw:inset-0 tw:bg-[#003df5]/10 tw:flex tw:items-center tw:justify-center tw:z-50">
+          <div className="tw:bg-white tw:rounded-lg tw:p-4 tw:shadow-lg tw:text-center">
+            <p className="tw:text-lg tw:font-semibold tw:text-[#003df5]">Drop image here</p>
+            <p className="tw:text-sm tw:text-gray-600">JPG, JPEG or PNG</p>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden file input for image upload */}
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        style={{ display: 'none' }} 
+        accept="image/jpeg,image/png,image/jpg" 
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            handleFileUpload(e.target.files[0]);
+          }
+        }}
+      />
+
       {showTrimNotification && (
         <div className="tw:absolute tw:top-16 tw:left-0 tw:right-0 tw:bg-yellow-100 tw:text-yellow-800 tw:px-3 tw:py-2 tw:text-sm tw:text-center tw:z-50 tw:opacity-90">
           Some older messages were removed due to storage limits.
@@ -356,7 +450,16 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
         formEvent={formEvent}
         inputRef={inputRef}
         loading={formEvent.loading}
+        openFileSelector={openFileSelector}
+        showCaptureDropdown={showCaptureDropdown}
+        setShowCaptureDropdown={setShowCaptureDropdown}
       />
+      
+      {/* Small hint about drag and drop */}
+      <div className="tw:text-xs tw:text-gray-500 tw:text-center tw:p-1 tw:bg-gray-100">
+        Tip: You can also drag & drop images directly
+      </div>
+      
       <Footer />
     </div>
   );
