@@ -1,4 +1,4 @@
-name: Build and Release Chrome Extension
+name: Build and release Kaveribot Extension
 
 on:
   workflow_dispatch:
