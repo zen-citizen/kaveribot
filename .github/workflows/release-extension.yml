@@ -1,0 +1,52 @@
+name: Build and Release Chrome Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build extension from'
+        required: true
+        default: 'main'
+      version:
+        description: 'Release version (e.g., v0..1.0)'
+        required: true
+        default: 'v0.1.0'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      
+      - name: Install dependencies
+        run: yarn install
+      
+      - name: Build extension
+        run: yarn build
+      
+      - name: Create zip file
+        run: |
+          cd dist
+          zip -r ../kaveribot-extension-${{ github.event.inputs.version }}.zip .
+          cd ..
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+          files: kaveribot-extension-${{ github.event.inputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
