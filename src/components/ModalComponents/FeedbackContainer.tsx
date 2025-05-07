@@ -3,18 +3,18 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 export const FeedbackContainer = () => {
   return (
     <div className="feedback-container">
-      <div className="tw:flex tw:gap-4 tw:ml-2 tw:mt-1">
+      <div className="tw:flex tw:gap-2 tw:ml-2">
         <button
-          className="tw:hover:bg-white tw:hover:rounded-2xl tw:hover:text-[#dodoe2] tw:p-1"
+          className="tw:p-1 tw:cursor-pointer tw:text-gray-500"
           id="thumbs-up-${uniqueid}"
         >
-          <ThumbsUp className="tw:hover:text-blue-600" />
+          <ThumbsUp className="tw:hover:text-gray-700 tw:w-5 tw:transition" />
         </button>
         <button
-          className="tw:hover:bg-white tw:hover:rounded-2xl tw:hover:text-[#dodoe2] tw:p-1"
+          className="tw:p-1 tw:cursor-pointer tw:text-gray-500"
           id="thumbs-down-${uniqueid}"
         >
-          <ThumbsDown className="tw:hover:text-blue-600" />
+          <ThumbsDown className="tw:hover:text-gray-700 tw:w-5 tw:transition" />
         </button>
       </div>
     </div>
