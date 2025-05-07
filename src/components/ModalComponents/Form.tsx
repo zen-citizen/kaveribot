@@ -1,10 +1,11 @@
-import { Mic, SendHorizontal } from "lucide-react";
+import { Mic, SendHorizontal, Camera } from "lucide-react";
 import { RefObject } from "react";
 
 interface ChatInputProps {
   message: string;
   setMessage: (message: string) => void;
   sendMessage: (message: string) => void;
+  captureScreen: () => void;
   loading: boolean;
   formEvent: { error: unknown; response: unknown; loading: boolean };
   inputRef: RefObject<HTMLTextAreaElement>;
@@ -13,6 +14,7 @@ export const Form = ({
   message,
   sendMessage,
   setMessage,
+  captureScreen,
   formEvent,
   inputRef,
 }: ChatInputProps) => {
@@ -37,12 +39,16 @@ export const Form = ({
         }}
         disabled={formEvent.loading}
       ></textarea>
-      <div className="chat-controls tw:flex tw:items-center tw:justify-between tw:p-2 tw:cursor-pointer">
+      <div className="chat-controls tw:flex tw:items-center tw:justify-between tw:p-2 tw:gap-2">
+        <Camera
+          className="tw:block tw:text-gray-500 tw:hover:text-gray-700 tw:transition tw:cursor-pointer"
+          onClick={captureScreen}
+        />
         <Mic
           className={
             textValue
               ? "tw:hidden"
-              : "tw:block tw:text-gray-500 tw:hover:text-gray-700 tw:transition"
+              : "tw:block tw:text-gray-500 tw:hover:text-gray-700 tw:transition tw:cursor-pointer"
           }
           id="mic-button"
         />
@@ -55,7 +61,7 @@ export const Form = ({
           }}
           className={
             textValue
-              ? "tw:block tw:text-gray-500 tw:hover:text-gray-700 tw:transition"
+              ? "tw:block tw:text-gray-500 tw:hover:text-gray-700 tw:transition tw:cursor-pointer"
               : "tw:hidden"
           }
         />
