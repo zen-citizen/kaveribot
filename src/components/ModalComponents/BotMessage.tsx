@@ -1,6 +1,7 @@
-import { MessageSquareMore } from "lucide-react";
+import { MessageSquareMore, Volume2, VolumeX } from "lucide-react";
 import { FeedbackContainer } from "./index";
 import ReactMarkdown from "react-markdown";
+import { useState, useEffect, useRef } from "react";
 
 // Define type for code component props to properly include inline
 type CodeProps = {
@@ -9,7 +10,131 @@ type CodeProps = {
   inline?: boolean;
 };
 
-export const BotMessage = ({ value }: { value: string }) => {
+// Local storage key for language preference - must match the one in Form.tsx
+const LANGUAGE_STORAGE_KEY = 'kaveribot_language_preference';
+
+export const BotMessage = ({ value, messageId }: { value: string; messageId?: string }) => {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const uniqueId = useRef(messageId || Math.random().toString(36).substring(2, 9)).current;
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  // Initialize and track available voices
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      setAvailableVoices(voices);
+    };
+    
+    // Load voices right away (might already be available in some browsers)
+    loadVoices();
+    
+    // Chrome loads voices asynchronously, so we need to listen for the voiceschanged event
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
+  // Cleanup function for speech when component unmounts
+  useEffect(() => {
+    return () => {
+      if (speechSynthRef.current && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const getSpeechLanguage = (): string => {
+    // Get language from localStorage, default to 'en-IN'
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(LANGUAGE_STORAGE_KEY) || 'en-IN';
+    }
+    return 'en-IN';
+  };
+
+  // Find the best matching voice for a given language code
+  const findBestVoice = (langCode: string): SpeechSynthesisVoice | null => {
+    if (!availableVoices || availableVoices.length === 0) {
+      return null;
+    }
+
+    // Try to find exact match
+    const exactMatch = availableVoices.find(voice => voice.lang === langCode);
+    if (exactMatch) {
+      return exactMatch;
+    }
+
+    // Try to find a voice with the same language (ignoring region)
+    const langPrefix = langCode.split('-')[0].toLowerCase();
+    const prefixMatch = availableVoices.find(voice => 
+      voice.lang.toLowerCase().startsWith(langPrefix + '-')
+    );
+    if (prefixMatch) {
+      return prefixMatch;
+    }
+
+    // If all else fails and it's not English, try to at least get a voice
+    // that has the correct base language
+    const anyMatch = availableVoices.find(voice => 
+      voice.lang.toLowerCase().startsWith(langPrefix)
+    );
+    if (anyMatch) {
+      return anyMatch;
+    }
+
+    // If we can't find any matching voice, return null
+    // The browser will use its default voice
+    return null;
+  };
+
+  const handleSpeak = () => {
+    if (!window.speechSynthesis) {
+      alert('Speech synthesis is not supported in your browser.');
+      return;
+    }
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    // Create utterance
+    const utterance = new SpeechSynthesisUtterance(value);
+    
+    // Get language from localStorage
+    const langCode = getSpeechLanguage();
+    utterance.lang = langCode;
+    
+    // Try to find a voice for this language
+    const voice = findBestVoice(langCode);
+    if (voice) {
+      utterance.voice = voice;
+      console.log(`Using voice: ${voice.name} (${voice.lang}) for language ${langCode}`);
+    } else {
+      console.log(`No specific voice found for ${langCode}, using browser default`);
+    }
+    
+    // Handle utterance events
+    utterance.onend = () => {
+      setIsSpeaking(false);
+    };
+    
+    utterance.onerror = (event) => {
+      console.error('Speech synthesis error:', event);
+      setIsSpeaking(false);
+    };
+    
+    // Store reference for cleanup
+    speechSynthRef.current = utterance;
+    
+    // Start speaking
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
+
   return (
     <div className="flex-col flex gap-1">
       <div className="flex-row flex gap-2 items-center">
@@ -55,7 +180,16 @@ export const BotMessage = ({ value }: { value: string }) => {
           </ReactMarkdown>
         </div>
       </div>
-      <FeedbackContainer />
+      <div className="flex items-center gap-2">
+        <FeedbackContainer messageId={uniqueId} />
+        <button
+          onClick={handleSpeak}
+          className="p-1 text-gray-500 hover:text-blue-600 focus:outline-none"
+          aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
+        >
+          {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+      </div>
     </div>
   );
 };

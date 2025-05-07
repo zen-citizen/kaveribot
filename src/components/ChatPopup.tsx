@@ -19,6 +19,13 @@ interface ChatPopupProps {
   togglePopup: boolean;
 }
 
+// Interface for message structure
+interface Message {
+  role: string;
+  message: string;
+  id: string;
+}
+
 const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const [formEvent, setFormEvent] = useState<{
     error: unknown;
@@ -31,34 +38,56 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   });
   const apiEndpoint = "/api/chat";
 
+  const generateMessageId = (): string => {
+    return Math.random().toString(36).substring(2, 9);
+  };
+
   const sendMessage = async (message: string) => {
     setMessage("");
-    messages.current.push({ role: "user", message });
+    const userMessageId = generateMessageId();
+    
+    // Add user message to the list
+    messages.current.push({ 
+      role: "user", 
+      message, 
+      id: userMessageId 
+    });
+    
     setFormEvent((prev) => ({
       ...prev,
       loading: true,
       error: null,
       response: null,
     }));
+    
     const { data, error } = await post(
       apiEndpoint,
       `${messages.current.map((m) => m.message).join("\n\n")}\n\n${message}`
     );
+    
     setFormEvent((prev) => ({
       ...prev,
       loading: false,
       error: error ? new Error(error?.toString()) : null,
       response: data,
     }));
+    
     focusOnInput();
+    
     if (data) {
-      messages.current.push({ message: data, role: "model" });
+      // Add bot message with a unique ID
+      messages.current.push({ 
+        message: data, 
+        role: "model", 
+        id: generateMessageId() 
+      });
     } else {
       setMessage(messages.current[messages.current.length - 1]?.message);
     }
   };
+  
   const [message, setMessage] = useState("");
-  const messages = useRef([]);
+  const messages = useRef<Message[]>([]);
   const inputRef = useRef(null);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);

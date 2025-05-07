@@ -32,6 +32,9 @@ const LANGUAGES = [
   { code: 'ar-SA', name: 'Arabic' }
 ];
 
+// Local storage key for saving language preference
+const LANGUAGE_STORAGE_KEY = 'kaveribot_language_preference';
+
 export const Form = ({
   message,
   sendMessage,
@@ -45,7 +48,14 @@ export const Form = ({
   const [transcript, setTranscript] = useState("");
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('en-IN');
+  // Load language from localStorage, default to 'en-IN' if not found
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      return savedLanguage || 'en-IN';
+    }
+    return 'en-IN';
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Click outside handler for dropdown
@@ -240,6 +250,10 @@ export const Form = ({
 
   const handleLanguageChange = (langCode: string) => {
     setSelectedLanguage(langCode);
+    // Save to localStorage when language changes
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, langCode);
+    }
     setShowLanguageDropdown(false);
   };
 
@@ -295,6 +309,7 @@ export const Form = ({
             height: "auto",
             maxHeight: "120px",
           }}
+          maxLength={500} // Add character limit to prevent overflowing
         />
         
         <div className="absolute right-2 bottom-2 flex gap-2">

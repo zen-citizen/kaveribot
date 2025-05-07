@@ -8,9 +8,15 @@ import {
   BotMessage,
 } from "./index";
 
+interface Message {
+  role: string;
+  message: string;
+  id?: string;
+}
+
 interface BodyProps {
   formEvent: { error: unknown; response: unknown; loading: boolean };
-  messages: React.MutableRefObject<{ role: string; message: string }[]>;
+  messages: React.MutableRefObject<Message[]>;
   chatBodyRef: RefObject<HTMLDivElement>;
 }
 
@@ -19,6 +25,16 @@ export const Body: React.FC<BodyProps> = ({
   messages,
   chatBodyRef,
 }) => {
+  // Ensure messages have IDs
+  useEffect(() => {
+    // Add unique IDs to messages that don't have them
+    messages.current.forEach(message => {
+      if (!message.id) {
+        message.id = Math.random().toString(36).substring(2, 9);
+      }
+    });
+  }, [messages.current.length]);
+
   // Scroll to bottom whenever messages change or when loading state changes
   useEffect(() => {
     if (chatBodyRef.current) {
@@ -36,12 +52,12 @@ export const Body: React.FC<BodyProps> = ({
         {messages.current.length === 0 && <DefaultMessage />}
         {messages.current.map((message, idx) => {
           return (
-            <div key={`${message?.role}-${idx}`} className={message?.role}>
+            <div key={message.id || `${message?.role}-${idx}`} className={message?.role}>
               {message.role === "user" && (
                 <UserMessage value={message.message} />
               )}
               {message.role === "model" && (
-                <BotMessage value={message.message} />
+                <BotMessage value={message.message} messageId={message.id} />
               )}
             </div>
           );
