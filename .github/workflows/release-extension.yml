@@ -43,24 +43,14 @@ jobs:
           zip -r ../kaveribot-extension-${{ github.event.inputs.version }}.zip .
           cd ..
       
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
+      # Using a current, maintained GitHub release action
+      - name: Create Release and Upload Asset
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.event.inputs.version }}
+          tag: ${{ github.event.inputs.version }}
           name: Release ${{ github.event.inputs.version }}
           draft: false
           prerelease: false
-          files: kaveribot-extension-${{ github.event.inputs.version }}.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./kaveribot-extension-${{ github.event.inputs.version }}.zip
-          asset_name: kaveribot-extension-${{ github.event.inputs.version }}.zip
-          asset_content_type: application/zip
+          artifacts: "kaveribot-extension-${{ github.event.inputs.version }}.zip"
+          artifactContentType: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
