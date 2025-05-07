@@ -9,12 +9,12 @@ export const Footer = () => {
             target="_blank"
             className="tw:underline-offset-2! tw:underline! tw:hover:opacity-85 tw:transition-opacity"
           >
-            <b>Zen Citizen</b>
+            <strong>Zen Citizen</strong>
           </a>
         </div>
         <div className="tw:flex tw:gap-3">
           <a
-            href="#"
+            href="https://zencitizen.in/contact-us/"
             className="tw:underline! tw:underline-offset-3! tw:hover:opacity-85 tw:transition-opacity"
           >
             Feedback
