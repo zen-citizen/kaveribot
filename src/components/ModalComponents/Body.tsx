@@ -49,7 +49,7 @@ export const Body: React.FC<BodyProps> = ({
       ref={chatBodyRef}
     >
       <div className="message tw:bot-message tw:flex tw:flex-col tw:gap-6 tw:w-full tw:mb-3">
-        {messagesForRender.length === 0 && <DefaultMessage />}
+        <DefaultMessage />
         {messagesForRender.map((message, idx) => {
           return (
             <div
