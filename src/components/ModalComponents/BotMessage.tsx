@@ -163,7 +163,7 @@ export const BotMessage = ({ value }: { value: string }) => {
               li: ({ children }) => <li className="tw:mb-1">{children}</li>,
               a: ({ children, href }) => (
                 <a
-                  className="tw:text-blue-600 hover:tw:underline"
+                  className="tw:text-blue-600! hover:tw:underline!"
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"

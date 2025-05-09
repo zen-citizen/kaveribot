@@ -20,7 +20,7 @@ export const UserMessage = ({ value }: { value: string }) => {
             em: ({ children }) => <em className="tw:italic">{children}</em>,
             a: ({ children, href }) => (
               <a
-                className="tw:underline"
+                className="tw:underline! tw:text-blue-600!"
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"

@@ -1,4 +1,4 @@
-import { CircleEllipsis, X } from "lucide-react";
+import { ChevronDown, CircleEllipsis } from "lucide-react";
 
 interface HeaderProps {
   setTogglePopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,7 +22,7 @@ export const Header = ({ setTogglePopup, togglePopup }: HeaderProps) => {
         </span>
       </div>
       <button>
-        <X
+        <ChevronDown
           className="tw:ml-2 tw:p-1 tw:rounded-full tw:hover:bg-gray-800 tw:transition-colors tw:focus:outline-none tw:text-white tw:cursor-pointer"
           aria-label="Close chat"
           onClick={() => setTogglePopup(!togglePopup)}

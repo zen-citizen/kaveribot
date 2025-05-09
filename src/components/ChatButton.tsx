@@ -1,4 +1,4 @@
-import { MessageSquareText, X } from "lucide-react";
+import { ChevronDown, MessageSquareText } from "lucide-react";
 
 interface ChatButtonProps {
   setTogglePopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -6,7 +6,7 @@ interface ChatButtonProps {
 }
 
 const ChatButton = ({ togglePopup, setTogglePopup }: ChatButtonProps) => {
-  const IconToggle = togglePopup ? <X /> : <MessageSquareText />;
+  const IconToggle = togglePopup ? <ChevronDown /> : <MessageSquareText />;
   return (
     <button
       id="chatbot-toggler"

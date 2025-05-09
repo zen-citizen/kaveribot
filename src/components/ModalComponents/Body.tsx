@@ -9,8 +9,8 @@ import {
 } from "./index";
 
 interface BodyProps {
-  formEvent: { error: unknown; response: unknown; loading: boolean };
-  messages: React.MutableRefObject<{ role: string; message: string }[]>;
+  formEvent: { errorMsg: string, error: unknown; response: unknown; loading: boolean };
+  messages: RefObject<{ role: string; message: string }[]>;
   chatBodyRef: RefObject<HTMLDivElement>; // ✅ Added missing prop
 }
 
@@ -42,7 +42,7 @@ export const Body: React.FC<BodyProps> = ({
           );
         })}
         {formEvent.loading && <Loader />}
-        {formEvent.error && <ErrorMessage error={formEvent?.error} />}
+        {formEvent.error && <ErrorMessage error={formEvent?.errorMsg} />}
       </div>
     </div>
   );

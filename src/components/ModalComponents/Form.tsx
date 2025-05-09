@@ -1,5 +1,6 @@
 import { Mic, MicOff, SendHorizontal, Globe } from "lucide-react";
 import { RefObject, useState, useEffect, useRef } from "react";
+import { useAppState } from "../../AppState";
 
 const LANGUAGES = [
   { code: "en-IN", name: "English (India)", label: "EN" },
@@ -38,7 +39,7 @@ export const Form = ({
   sendMessage,
   setMessage,
   formEvent,
-  inputRef
+  inputRef,
 }: ChatInputProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -55,7 +56,7 @@ export const Form = ({
     return "en-IN";
   });
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const { featureFlags } = useAppState();
   // Click outside handler for dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -262,12 +263,14 @@ export const Form = ({
     setShowLanguageDropdown(false);
   };
 
-  const getSelectedLanguageName = () => {
-    return (
-      LANGUAGES.find((lang) => lang.code === selectedLanguage)?.name ||
-      "English (India)"
-    );
-  };
+  // const getSelectedLanguageName = () => {
+  //   return (
+  //     LANGUAGES.find((lang) => lang.code === selectedLanguage)?.name ||
+  //     "English (India)"
+  //   );
+  // };
+
+  const isLongMessage = message.length > 40;
   return (
     <form
       className="chat-input tw:sticky tw:bottom-0 tw:border-t tw:border-gray-200 tw:p-2 tw:bg-white"
@@ -293,16 +296,16 @@ export const Form = ({
         <div className="recording-indicator tw:flex! tw:items-center! tw:gap-2 tw:mb-2 tw:p-2 tw:bg-red-50 tw:border tw:border-red-200 tw:rounded-md">
           <div className="tw:flex-shrink-0! tw:h-3 tw:w-3 tw:bg-red-500 tw:rounded-full tw:animate-pulse"></div>
           <span className="tw:text-red-500 tw:font-medium tw:text-sm">
-            Recording: {formatTime(recordingTime)} in{" "}
-            {getSelectedLanguageName()}
+            Recording: {formatTime(recordingTime)}
           </span>
         </div>
       )}
 
-      <div className="tw:flex! tw:items-end! tw:relative">
+      <div className={`tw:flex! ${isLongMessage ? `tw:items-end!` : `tw:items-center!`} tw:relative`}>
         <textarea
           id="chat-input"
-          className="tw:flex-1! tw:p-3 tw:pr-12 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none! tw:focus:ring-2 tw:focus:ring-blue-500 tw:max-h-32 tw:resize-none!"
+          className="tw:text-gray-800! tw:text-sm! tw:flex-1! tw:p-3 tw:pr-12 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none! tw:focus:ring-2 tw:focus-ring-[#003df5]/60 tw:max-h-64 tw:resize-none!"
+          rows={isLongMessage ? 4 : 1}
           placeholder={
             isRecording ? "Listening..." : "Type your message here..."
           }
@@ -320,18 +323,20 @@ export const Form = ({
           disabled={isRecording}
         />
 
-        <div className="tw:absolute tw:right-2 tw:bottom-2 tw:flex tw:gap-2">
-          {isSpeechSupported && (
+        <div className="tw:flex! tw:gap-2">
+          {isSpeechSupported && featureFlags.langSupport && (
             <div className="tw:relative" ref={dropdownRef}>
               <button
                 type="button"
-                className="tw:p-2 tw:text-gray-500 hover:tw:text-blue-500 tw:focus:outline-none! tw:flex tw:items-center"
+                className="tw:p-2 tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700 tw:transition
+  tw:focus:outline-none! tw:flex tw:items-center"
                 onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
                 aria-label="Select language"
               >
                 <Globe size={18} />
                 <span className="tw:text-xs tw:ml-1">
-                  {LANGUAGES?.find(lang => lang.code === selectedLanguage)?.label || "EN"}
+                  {LANGUAGES?.find((lang) => lang.code === selectedLanguage)
+                    ?.label || "EN"}
                 </span>
               </button>
 
@@ -355,13 +360,13 @@ export const Form = ({
             </div>
           )}
 
-          {(isSpeechSupported && (isRecording || !message)) && (
+          {isSpeechSupported && (isRecording || !message) && (
             <button
               type="button"
               className={`tw:p-2 ${
                 isRecording
                   ? "tw:text-red-500"
-                  : "tw:text-gray-500 hover:tw:text-blue-500"
+                  : "tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700 tw:transition"
               } tw:focus:outline-none!`}
               onClick={toggleRecording}
               disabled={formEvent.loading}
@@ -371,13 +376,13 @@ export const Form = ({
             </button>
           )}
 
-          {(!isSpeechSupported || (!isRecording && (message))) && (
+          {(!isSpeechSupported || (!isRecording && message)) && (
             <button
               type="submit"
               className={`tw:p-2 ${
                 (message.trim() || (isRecording && transcript.trim())) &&
                 !formEvent.loading
-                  ? "tw:text-blue-500 hover:tw:text-blue-700"
+                  ? "tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700 tw:transition"
                   : "tw:text-gray-300"
               } tw:focus:outline-none!`}
               disabled={
