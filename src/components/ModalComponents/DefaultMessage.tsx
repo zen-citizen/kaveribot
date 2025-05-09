@@ -11,7 +11,7 @@ export const DefaultMessage = () => {
           <a
             href="https://zencitizen.in"
             target="_blank"
-            className="tw:text-blue-600 tw:font-semibold tw:underline tw:underline-offset-2 tw:hover:opacity-85 tw:transition-opacity"
+            className="tw:text-blue-600! tw:font-semibold tw:underline! tw:underline-offset-2 tw:hover:opacity-85 tw:transition-opacity"
           >
             Zen Citizen
           </a>{" "}
@@ -22,7 +22,7 @@ export const DefaultMessage = () => {
           marriage online on the Kaveri portal.
           <em> We plan to expand to more services soon.</em>
         </p>
-        <p className="tw:text-xs tw:font-medium tw:text-gray-400 tw:leading-[1.5] tw:mb-0!">
+        <p className="tw:text-xs tw:font-semibold tw:text-gray-400 tw:leading-[1.5] tw:mb-0!">
           AI is occasionally inaccurate. Always verify important information.
         </p>
       </div>
