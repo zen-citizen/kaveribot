@@ -36,6 +36,9 @@ jobs:
       
       - name: Build extension
         run: yarn build
+        env:
+          VITE_ZC_KEY: ${{ secrets.VITE_ZC_KEY }}
+          VITE_ENV: production
       
       - name: Create zip file
         run: |
