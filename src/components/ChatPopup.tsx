@@ -2,12 +2,22 @@ import { useRef, useState } from "react";
 import axios from "axios";
 
 import { Body, Header, Form, Footer } from "./ModalComponents/index";
+import { useAppState } from "../AppState";
 
-const baseURL = `https://zc-gpt.vercel.app`;
+const baseURL = `http://localhost:8000`;
+// const baseURL = `https://zc-gpt.vercel.app`;
 
 const post = async (url: string, message: string) => {
   try {
-    const response = await axios.post(baseURL + url, { message });
+    const response = await axios.post(
+      baseURL + url,
+      { message },
+      {
+        headers: {
+          "zc-key": import.meta.env.VITE_ZC_KEY,
+        },
+      }
+    );
     return { data: response?.data?.reply, error: null };
   } catch (e) {
     return { data: null, error: e };
@@ -20,18 +30,22 @@ interface ChatPopupProps {
 }
 
 const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
+  const { setMessages, messages: storedMessages } = useAppState();
   const [formEvent, setFormEvent] = useState<{
     error: unknown;
     response: unknown;
     loading: boolean;
+    errorMsg: string;
   }>({
     error: null,
     response: null,
     loading: false,
+    errorMsg: "",
   });
   const apiEndpoint = "/api/chat";
 
   const sendMessage = async (message: string) => {
+    scrollToBottom();
     setMessage("");
     messages.current.push({ role: "user", message });
     setFormEvent((prev) => ({
@@ -47,31 +61,36 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     setFormEvent((prev) => ({
       ...prev,
       loading: false,
-      error: error ? new Error(error?.toString()) : null,
+      error: error ? error : null,
+      errorMsg: error ? error?.response?.data?.error || error?.message : "",
       response: data,
     }));
     focusOnInput();
+    scrollToBottom();
     if (data) {
       messages.current.push({ message: data, role: "model" });
-    } else {
-      setMessage(messages.current[messages.current.length - 1]?.message);
     }
+    setMessages([...messages.current]);
   };
   const [message, setMessage] = useState("");
-  const messages = useRef([]);
+  const messages = useRef(storedMessages);
   const inputRef = useRef(null);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    chatBodyRef.current?.scrollTo({
-      top: chatBodyRef.current.scrollHeight + 320,
-      behavior: "smooth",
-    });
+    // chatBodyRef.current?.scrollTo({
+    //   top: chatBodyRef.current.scrollHeight + 320,
+    //   behavior: "smooth",
+    // });
+    if (chatBodyRef.current) {
+      setTimeout(() => {
+        chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+      }, 10);
+    }
   };
 
   const focusOnInput = () => {
-    scrollToBottom();
     setTimeout(() => {
       inputRef?.current?.focus();
       const el = document.getElementById("chat-input");
@@ -80,13 +99,8 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   };
 
   return (
-    <div
-      className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:max-w-[80%] tw:sm:max-w-[60%] tw:md:max-w-[40%] tw:lg:max-w-[33%] tw:xl:max-w-[25%]"
-    >
-      <Header
-        setTogglePopup={setTogglePopup}
-        togglePopup={togglePopup}
-      />
+    <div className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:w-[min(calc(100vw-32px),360px)]">
+      <Header setTogglePopup={setTogglePopup} togglePopup={togglePopup} />
       <Body
         chatBodyRef={chatBodyRef}
         formEvent={formEvent}

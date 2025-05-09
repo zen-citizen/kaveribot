@@ -1,4 +1,10 @@
 @import "tailwindcss" prefix(tw);
+@import "./assets/markdown.css";
+
+#kaveri-bot-app, #kaveri-bot-app > *  {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  font-size: 16px !important;
+}
 
 .message-text > * + * {
   margin-top: 1.5em;

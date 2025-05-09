@@ -7,22 +7,22 @@ export const Footer = () => {
           <a
             href="http://zencitizen.in/"
             target="_blank"
-            className="tw:underline-offset-2! tw:underline! tw:hover:opacity-85 tw:transition-opacity"
+            className="tw:text-blue-600! tw:font-semibold tw:underline! tw:hover:opacity-85 tw:transition-opacity tw:underline-offset-2!"
           >
-            <b>Zen Citizen</b>
+            <strong>Zen Citizen</strong>
           </a>
         </div>
         <div className="tw:flex tw:gap-3">
           <a
-            href="#"
-            className="tw:underline! tw:underline-offset-3! tw:hover:opacity-85 tw:transition-opacity"
+            href="https://zencitizen.in/contact-us/"
+            className="tw:text-blue-600! tw:font-semibold tw:underline! tw:hover:opacity-85 tw:transition-opacity tw:underline-offset-2!"
           >
             Feedback
           </a>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLScQS_-VgUFQZJedyu6iIlpoYymsKSyGUhrvPoJX1WkZGQqfLQ/viewform"
             target="_blank"
-            className="tw:underline! tw:underline-offset-3! tw:hover:opacity-85 tw:transition-opacity"
+            className="tw:text-blue-600! tw:font-semibold tw:underline! tw:hover:opacity-85 tw:transition-opacity tw:underline-offset-2!"
           >
             Volunteer
           </a>

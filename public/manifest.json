@@ -24,14 +24,5 @@
         "assets/index.css"
       ]
     }
-  ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; style-src 'self' 'unsafe-inline'"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["assets/index.css"],
-      "matches": ["https://kaveri.karnataka.gov.in/*"]
-    }
   ]
 }
