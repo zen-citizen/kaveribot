@@ -13,7 +13,7 @@ const post = async (url: string, message: string) => {
       { message },
       {
         headers: {
-          "zc-key": import.meta.env.VITE_ZC_KEY,
+          "x-zc-key": import.meta.env.VITE_ZC_KEY,
         },
       }
     );
