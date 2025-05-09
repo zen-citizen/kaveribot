@@ -4,8 +4,7 @@ import axios from "axios";
 import { Body, Header, Form, Footer } from "./ModalComponents/index";
 import { useAppState } from "../AppState";
 
-const baseURL = `http://localhost:8000`;
-// const baseURL = `https://zc-gpt.vercel.app`;
+const baseURL = import.meta.env.VITE_ENV === "development" ? `http://localhost:8000` : `https://zc-gpt.vercel.app`;
 
 const post = async (url: string, message: string) => {
   try {
