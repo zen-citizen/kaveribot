@@ -1,28 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "Kaveri Voice Assistant",
+  "name": "Ask Zen Citizen",
   "version": "1.0",
-  "description": "Use voice or text to get help navigating the Kaveri Government Portal. Ask questions and get AI-powered answers instantly.",
+  "description": "Get instant AI-powered assistance with the marriage registration process on the Kaveri portal of the Government of Karnataka. Ask questions via voice or text to find answers and get help quickly. (Note: This tool is not affiliated with the Government of Karnataka)",
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": [
-    "storage"
-  ],
-  "host_permissions": [
-    "https://kaveri.karnataka.gov.in/*"
-  ],
+  "permissions": ["storage"],
+  "host_permissions": ["https://kaveri.karnataka.gov.in/*"],
   "content_scripts": [
     {
-      "matches": [
-        "https://kaveri.karnataka.gov.in/*"
-      ],
-      "js": [
-        "assets/index.js"
-      ],
-      "css": [
-        "assets/index.css"
-      ]
+      "matches": ["https://kaveri.karnataka.gov.in/*"],
+      "js": ["assets/index.js"],
+      "css": ["assets/index.css"]
     }
   ]
 }
