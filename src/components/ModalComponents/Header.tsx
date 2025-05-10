@@ -16,7 +16,7 @@ export const Header = ({ setTogglePopup, togglePopup }: HeaderProps) => {
           strokeWidth={1.5}
         />
         <h2 className="logo-text tw:text-md tw:font-semibold tw:text-white tw:text-underline tw:mb-0! tw:whitespace-nowrap">
-          Ask Zen
+          Ask Zen Citizen
         </h2>
         <span className="tw:bg-gray-200 tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-xs tw:text-[#003df5]">
           Beta
