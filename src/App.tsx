@@ -10,7 +10,7 @@ function App() {
   const featureFlags: AppContext["featureFlags"] = { langSupport: false }
   return (
     <AppState.Provider value={{ messages, setMessages, featureFlags }}>
-      <div id="kaveri-bot-app" className="app-container relative">
+      <div id="kaveri-bot-app" className="app-container relative! z-[10000000]">
         <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} />
         {togglePopup && <ChatPopup setTogglePopup={setTogglePopup} togglePopup={togglePopup}/>}
       </div>
