@@ -78,10 +78,6 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    // chatBodyRef.current?.scrollTo({
-    //   top: chatBodyRef.current.scrollHeight + 320,
-    //   behavior: "smooth",
-    // });
     if (chatBodyRef.current) {
       setTimeout(() => {
         chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
@@ -97,8 +93,17 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     }, 100);
   };
 
+  const panelWidth = 'min(calc(100vw - 32px), 360px)';
+
   return (
-    <div style={{ zIndex: 10000000 }} className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:w-[min(calc(100vw-32px),360px)]">
+    <div 
+      style={{ 
+        zIndex: 10000000,
+        transform: togglePopup ? 'translateX(0)' : 'translateX(100%)',
+        width: panelWidth
+      }} 
+      className="chatbot-sidepanel tw:fixed tw:top-0 tw:right-0 tw:h-full tw:bg-gray-100 tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:transform tw:transition-transform"
+    >
       <Header setTogglePopup={setTogglePopup} togglePopup={togglePopup} />
       <Body
         chatBodyRef={chatBodyRef}

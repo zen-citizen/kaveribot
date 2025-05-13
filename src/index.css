@@ -13,3 +13,25 @@
 .message-text {
   line-height: 1.5;
 }
+
+/* Sidepanel transitions */
+.chatbot-sidepanel {
+  transition: transform 0.3s ease-in-out;
+  height: 100vh;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+#chatbot-toggler {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Shift website content */
+body {
+  transition: margin-right 0.3s ease-in-out;
+  margin-right: 0;
+}
+
+html.kaveri-bot-active body > *:not(#kaveri-bot-app) {
+  transition: margin-right 0.3s ease-in-out;
+  margin-right: min(calc(100vw - 32px), 360px);
+}
