@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import ZcLogo from "../../assets/zc-logo.svg?react";
 
 interface HeaderProps {
@@ -23,7 +23,7 @@ export const Header = ({ setTogglePopup, togglePopup }: HeaderProps) => {
         </span>
       </div>
       <button>
-        <ChevronDown
+        <ChevronRight
           className="tw:ml-2 tw:p-1 tw:rounded-full tw:hover:bg-gray-800 tw:transition-colors tw:focus:outline-none tw:text-white tw:cursor-pointer"
           aria-label="Close chat"
           onClick={() => setTogglePopup(!togglePopup)}
