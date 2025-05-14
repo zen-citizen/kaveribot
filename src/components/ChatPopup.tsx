@@ -2,8 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import { Body, Header, Form, Footer } from "./ModalComponents/index";
 import { useAppState } from "../AppState";
 
-const baseURL = import.meta.env.VITE_ENV === "development" ? `http://localhost:8000` : `https://zc-gpt.vercel.app`;
-
+const baseURL =
+  import.meta.env.VITE_ENV === "development"
+    ? `http://localhost:8000`
+    : `https://zc-gpt.vercel.app`;
 
 const post = async (
   endpoint: string,
@@ -46,23 +48,39 @@ const post = async (
               return;
             }
             const chunk = new TextDecoder().decode(value);
-            const lines = chunk.split("\n\n");
-            for (const line of lines) {
-              if (line.startsWith("data: ") && line !== "data: [DONE]") {
-                try {
-                  const data = JSON.parse(line.replace("data: ", ""));
-                  if (data.text) {
-                    responseText += data.text;
-                    if (onChunk) onChunk(data.text);
-                  } else if (data.error) {
-                    reject({ data: null, error: data.error });
-                    return;
-                  }
-                } catch (e) {
-                  console.error("Failed to parse SSE chunk:", line, e);
-                }
+            try {
+              const data = JSON.parse(chunk);
+              if (data.text) {
+                responseText += data.text;
+                if (onChunk) onChunk(data.text);
               }
+              if (data.error) {
+                return reject({ data: null, error: data.error });
+              }
+              if (data?.state === "done") {
+                resolve({ data: responseText, error: null });
+                return;
+              }
+            } catch (e) {
+              console.error("Failed to parse SSE chunk:", chunk, e);
             }
+            // const lines = chunk.split("\n\n");
+            // for (const line of lines) {
+            //   if (line.startsWith("data: ") && line !== "data: [DONE]") {
+            //     try {
+            //       const data = JSON.parse(line.replace("data: ", ""));
+            //       if (data.text) {
+            //         responseText += data.text;
+            //         if (onChunk) onChunk(data.text);
+            //       } else if (data.error) {
+            //         reject({ data: null, error: data.error });
+            //         return;
+            //       }
+            //     } catch (e) {
+            //       console.error("Failed to parse SSE chunk:", line, e);
+            //     }
+            //   }
+            // }
             read();
           };
           read();
@@ -125,12 +143,17 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       .join("\n\n")}\n\n${message}`;
 
     try {
-      const { data, error } = await post(apiEndpoint, fullMessage, (chunk) => {
-        setFormEvent((prev) => ({
-          ...prev,
-          response: prev.response ? prev.response + chunk : chunk,
-        }));
-      });
+      const { data, error } = await post(
+        apiEndpoint,
+        fullMessage,
+        async (chunk) => {
+          setFormEvent((prev) => ({
+            ...prev,
+            response: prev.response ? prev.response + chunk : chunk,
+          }));
+          scrollToBottom();
+        }
+      );
 
       setFormEvent((prev) => ({
         ...prev,
