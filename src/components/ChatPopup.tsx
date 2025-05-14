@@ -1,26 +1,80 @@
-import { useRef, useState } from "react";
-import axios from "axios";
-
+import { useRef, useState, useEffect } from "react";
 import { Body, Header, Form, Footer } from "./ModalComponents/index";
 import { useAppState } from "../AppState";
 
 const baseURL = import.meta.env.VITE_ENV === "development" ? `http://localhost:8000` : `https://zc-gpt.vercel.app`;
 
-const post = async (url: string, message: string) => {
-  try {
-    const response = await axios.post(
-      baseURL + url,
-      { message },
-      {
+
+const post = async (
+  endpoint: string,
+  message: string,
+  onChunk?: (chunk: string) => void
+) => {
+  if (!message.trim()) {
+    return { data: null, error: "Message cannot be empty" };
+  }
+
+  return new Promise<{ data: string | null; error: string | null }>(
+    (resolve, reject) => {
+      fetch(`${baseURL}${endpoint}`, {
+        method: "POST",
         headers: {
           "x-zc-key": import.meta.env.VITE_ZC_KEY,
+          "Content-Type": "application/json",
         },
-      }
-    );
-    return { data: response?.data?.reply, error: null };
-  } catch (e) {
-    return { data: null, error: e };
-  }
+        body: JSON.stringify({ message }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((err) => {
+              throw new Error(
+                `HTTP error ${response.status}: ${
+                  err.error || response.statusText
+                }`
+              );
+            });
+          }
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error("Response body is not readable");
+          }
+          let responseText = "";
+          const read = async () => {
+            const { done, value } = await reader.read();
+            if (done) {
+              resolve({ data: responseText, error: null });
+              return;
+            }
+            const chunk = new TextDecoder().decode(value);
+            const lines = chunk.split("\n\n");
+            for (const line of lines) {
+              if (line.startsWith("data: ") && line !== "data: [DONE]") {
+                try {
+                  const data = JSON.parse(line.replace("data: ", ""));
+                  if (data.text) {
+                    responseText += data.text;
+                    if (onChunk) onChunk(data.text);
+                  } else if (data.error) {
+                    reject({ data: null, error: data.error });
+                    return;
+                  }
+                } catch (e) {
+                  console.error("Failed to parse SSE chunk:", line, e);
+                }
+              }
+            }
+            read();
+          };
+          read();
+        })
+        .catch((error) => {
+          reject({
+            data: null,
+            error: error.message || "Failed to connect to the server",
+          });
+        });
+    }
+  );
 };
 
 interface ChatPopupProps {
@@ -31,8 +85,8 @@ interface ChatPopupProps {
 const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const { setMessages, messages: storedMessages } = useAppState();
   const [formEvent, setFormEvent] = useState<{
-    error: unknown;
-    response: unknown;
+    error: string | null;
+    response: string | null;
     loading: boolean;
     errorMsg: string;
   }>({
@@ -44,44 +98,76 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
   const apiEndpoint = "/api/chat";
 
   const sendMessage = async (message: string) => {
+    if (!message.trim()) {
+      setFormEvent((prev) => ({
+        ...prev,
+        error: "Message cannot be empty",
+        errorMsg: "Please enter a valid message",
+        loading: false,
+      }));
+      return;
+    }
+
     scrollToBottom();
     setMessage("");
     messages.current.push({ role: "user", message });
+    setMessages([...messages.current]);
     setFormEvent((prev) => ({
       ...prev,
       loading: true,
       error: null,
       response: null,
+      errorMsg: "",
     }));
-    const { data, error } = await post(
-      apiEndpoint,
-      `${messages.current.map((m) => m.message).join("\n\n")}\n\n${message}`
-    );
-    setFormEvent((prev) => ({
-      ...prev,
-      loading: false,
-      error: error ? error : null,
-      errorMsg: error ? error?.response?.data?.error || error?.message : "",
-      response: data,
-    }));
+
+    const fullMessage = `${messages.current
+      .map((m) => m.message)
+      .join("\n\n")}\n\n${message}`;
+
+    try {
+      const { data, error } = await post(apiEndpoint, fullMessage, (chunk) => {
+        setFormEvent((prev) => ({
+          ...prev,
+          response: prev.response ? prev.response + chunk : chunk,
+        }));
+      });
+
+      setFormEvent((prev) => ({
+        ...prev,
+        loading: false,
+        error: error || null,
+        errorMsg: error || "",
+        response: data,
+      }));
+
+      if (data) {
+        messages.current.push({ message: data, role: "model" });
+        setMessages([...messages.current]);
+      } else {
+        setMessage(
+          messages.current[messages.current.length - 1]?.message || ""
+        );
+      }
+    } catch (error) {
+      setFormEvent((prev) => ({
+        ...prev,
+        loading: false,
+        error: error.message,
+        errorMsg: error.message || "Failed to fetch response",
+        response: null,
+      }));
+    }
+
     focusOnInput();
     scrollToBottom();
-    if (data) {
-      messages.current.push({ message: data, role: "model" });
-    }
-    setMessages([...messages.current]);
   };
+
   const [message, setMessage] = useState("");
   const messages = useRef(storedMessages);
-  const inputRef = useRef(null);
-
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    // chatBodyRef.current?.scrollTo({
-    //   top: chatBodyRef.current.scrollHeight + 320,
-    //   behavior: "smooth",
-    // });
     if (chatBodyRef.current) {
       setTimeout(() => {
         chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
@@ -97,8 +183,16 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     }, 100);
   };
 
+  // Sync storedMessages to messages.current on mount/update
+  useEffect(() => {
+    messages.current = storedMessages;
+  }, [storedMessages]);
+
   return (
-    <div style={{ zIndex: 10000000 }} className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:w-[min(calc(100vw-32px),360px)]">
+    <div
+      style={{ zIndex: 10000000 }}
+      className="chatbot-popup tw:fixed tw:bottom-20 tw:right-4 tw:bg-gray-100 tw:rounded-2xl tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:max-h-[70vh] tw:w-[min(calc(100vw-32px),360px)]"
+    >
       <Header setTogglePopup={setTogglePopup} togglePopup={togglePopup} />
       <Body
         chatBodyRef={chatBodyRef}
