@@ -171,7 +171,7 @@ const ImageResizer = () => {
       <div className="tw:p-4 tw:flex tw:flex-col tw:gap-5 tw:flex-grow tw:overflow-y-auto">
         {/* Description */}
         <p className="tw:text-gray-500">
-          Upload an image to resize it to B2 (707 × 500 mm), convert it to PNG, and compress it under 2MB.
+          Upload an image to resize it to B2 (707 × 500 mm)/(2673 x 1890 px), convert it to PNG, and compress it under 2MB.
         </p>
         
         {/* Upload area or preview */}
@@ -222,7 +222,10 @@ const ImageResizer = () => {
         
         {/* Slider for resolution */}
         <div className="tw:mt-2">
-          <p className="tw:text-gray-500 tw:mb-2">Maximum Resolution (MB)</p>
+          <div className="tw:flex tw:justify-between tw:mb-2">
+            <p className="tw:text-gray-500">Maximum Resolution (MB)</p>
+            <p className="tw:text-gray-600 tw:font-medium">{maxSize.toFixed(1)} MB</p>
+          </div>
           <div className="tw:flex tw:items-center tw:gap-2">
             <span className="tw:text-gray-500">0</span>
             <input 
@@ -235,6 +238,10 @@ const ImageResizer = () => {
               className="tw:flex-grow tw:h-1 tw:appearance-none tw:bg-gray-300 tw:rounded-full"
             />
             <span className="tw:bg-[#2a2347] tw:text-white tw:px-2 tw:py-1 tw:rounded-md">1.9</span>
+          </div>
+          <div className="tw:flex tw:justify-between tw:text-xs tw:text-gray-400 tw:mt-1">
+            <span>Lower quality, smaller file</span>
+            <span>Higher quality, larger file</span>
           </div>
         </div>
         
@@ -249,9 +256,9 @@ const ImageResizer = () => {
         <div className="tw:flex tw:justify-center tw:mt-2">
           <button 
             onClick={downloadImage}
-            className={`tw:py-2 tw:px-4 tw:rounded-md tw:font-medium tw:border tw:bg-blue-400 ${
+            className={`tw:py-2 tw:px-4 tw:rounded-md tw:font-medium tw:border tw:bg-blue-600${
               processedImageUrl && !processing 
-                ? 'tw:bg-blue-100 tw:text-black hover:tw:bg-gray-300' 
+                ? 'tw:bg-blue-100 tw:text-black tw:hover:bg-gray-300 tw:cursor-pointer' 
                 : 'tw:bg-gray-100 tw:text-gray-400 tw:cursor-not-allowed'
             }`}
             disabled={!processedImageUrl || processing}
@@ -262,7 +269,7 @@ const ImageResizer = () => {
       </div>
       
       {/* Footer */}
-      < Footer />
+      <Footer />
     </div>
   );
 };
