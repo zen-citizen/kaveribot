@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Kaveri Bot Side Panel",
+  "version": "1.0",
+  "description": "A sidepanel extension that adjusts webpage content",
+  "permissions": ["activeTab", "scripting", "storage", "sidePanel"],
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Kaveri Bot",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["index.html", "assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+} 
