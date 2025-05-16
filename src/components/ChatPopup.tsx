@@ -112,22 +112,13 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       }}
       className="chatbot-sidepanel tw:fixed tw:top-0 tw:right-0 tw:bg-gray-100 tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:transform tw:transition-transform"
     >
-      {/* Close button in the top right */}
-      <div className="tw:absolute tw:top-3 tw:right-3 tw:z-50">
-        <button
-          onClick={() => setTogglePopup(false)}
-          className="tw:text-gray-500 hover:tw:text-gray-700 tw:bg-transparent tw:cursor-pointer"
-        >
-          <ChevronRight className="tw:w-6 tw:h-6" />
-        </button>
-      </div>
 
       {/* Tab Navigation */}
-      <div className="tw:flex tw:border-b tw:border-gray-300">
+      <div className="tw:flex tw:pb-2">
         <button
-          className={`tw:border-t-3 tw:flex-1 tw:py-2 tw:text-center tw:font-medium tw:cursor-pointer ${
+          className={`tw:border-b-3 tw:flex-1 tw:py-2 tw:text-center tw:font-medium tw:cursor-pointer ${
             activeTab === "chat"
-              ? "tw:border-blue-600"
+              ? "tw:border-zinc-700"
               : "tw:border-transparent tw:text-gray-500"
           }`}
           onClick={() => setActiveTab("chat")}
@@ -135,9 +126,9 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
           Chat
         </button>
         <button
-          className={`tw:border-t-3 tw:flex-1 tw:py-3 tw:text-center tw:font-medium tw:cursor-pointer ${
+          className={`tw:border-b-3 tw:flex-1 tw:py-3 tw:text-center tw:font-medium tw:cursor-pointer ${
             activeTab === "imageResizer"
-              ? "tw:border-blue-600"
+              ? "tw:border-zinc-700"
               : "tw:border-transparent tw:text-gray-500"
           }`}
           onClick={() => setActiveTab("imageResizer")}
@@ -147,10 +138,10 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       </div>
       <>
         {/* Chat Header */}
-        <div className="tw:bg-black tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
+        <div className="tw:bg-zinc-700 tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
           <div className="tw:flex tw:items-center tw:gap-x-2">
             <ZcLogo
-              className="tw:text-white !tw:min-w-[30px]"
+              className="tw:text-white tw:min-w-[30px]!"
               width={30}
               strokeWidth={1.5}
             />
@@ -158,11 +149,11 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
               {activeTab === "chat" ? "Ask Zen Citizen" : "Image Resizer"}
             </h2>
           </div>
-          {/* {activeTab === "chat" && (
-            <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-blue-500 tw:bg-white">
+          {activeTab === "chat" && (
+            <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">
               Beta
             </span>
-          )} */}
+          )}
         </div>
 
         {activeTab === "chat" && (
