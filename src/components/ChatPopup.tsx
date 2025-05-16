@@ -166,22 +166,24 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
         </div>
 
         {activeTab === "chat" && (
-          <>
+          <div className="tw:flex tw:flex-col tw:flex-1 tw:justify-between">
             <Body
               chatBodyRef={chatBodyRef}
               formEvent={formEvent}
               messages={messages}
             />
-            <Form
-              message={message}
-              sendMessage={sendMessage}
-              setMessage={setMessage}
-              formEvent={formEvent}
-              inputRef={inputRef}
-              loading={formEvent.loading}
-            />
-            <Footer />
-          </>
+            <div>
+              <Form
+                message={message}
+                sendMessage={sendMessage}
+                setMessage={setMessage}
+                formEvent={formEvent}
+                inputRef={inputRef}
+                loading={formEvent.loading}
+              />
+              <Footer />
+            </div>
+          </div>
         )}
         {activeTab === "imageResizer" && <ImageResizer />}
       </>
