@@ -159,13 +159,6 @@ const ImageResizer = () => {
 
   return (
     <div className="tw:flex tw:flex-col tw:h-full">
-      {/* Header with icon */}
-      <div className="tw:bg-[#14082d] tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
-        <div className="tw:bg-[#2a2347] tw:rounded-full tw:w-10 tw:h-10 tw:flex tw:items-center tw:justify-center">
-          <span className="tw:text-white">•••</span>
-        </div>
-        <h2 className="tw:text-white tw:text-xl">Image Resizer</h2>
-      </div>
       
       {/* Main content */}
       <div className="tw:p-4 tw:flex tw:flex-col tw:gap-5 tw:flex-grow tw:overflow-y-auto">
