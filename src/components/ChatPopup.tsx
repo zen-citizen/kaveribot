@@ -148,8 +148,12 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       <>
         {/* Chat Header */}
         <div className="tw:bg-black tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
-          <div className="tw:flex tw:items-center">
-            <ZcLogo />
+          <div className="tw:flex tw:items-center tw:gap-x-2">
+            <ZcLogo
+              className="tw:text-white !tw:min-w-[30px]"
+              width={30}
+              strokeWidth={1.5}
+            />
             <h2 className="tw:text-md tw:font-semibold tw:text-white tw:mb-0 tw:whitespace-nowrap">
               {activeTab === "chat" ? "Ask Zen Citizen" : "Image Resizer"}
             </h2>
