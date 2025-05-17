@@ -100,14 +100,11 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     }, 100);
   };
 
-  const panelWidth = "min(calc(100vw - 32px), 360px)";
-
   return (
     <div
       style={{
         zIndex: 10000000,
         transform: togglePopup ? "translateX(0)" : "translateX(100%)",
-        width: panelWidth,
         height: "100%",
       }}
       className="chatbot-sidepanel tw:fixed tw:top-0 tw:right-0 tw:bg-gray-100 tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:transform tw:transition-transform"
