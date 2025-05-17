@@ -7,9 +7,7 @@ import { useAppState } from "../AppState";
 import ImageResizer from "./ImageResizer";
 
 const baseURL =
-  import.meta.env.VITE_ENV === "development"
-    ? `http://localhost:8000`
-    : `https://zc-gpt.vercel.app`;
+  import.meta.env.VITE_ZCGPT_API || `https://zc-gpt.vercel.app`;
 
 const post = async (url: string, message: string) => {
   try {
@@ -28,12 +26,7 @@ const post = async (url: string, message: string) => {
   }
 };
 
-interface ChatPopupProps {
-  setTogglePopup: React.Dispatch<React.SetStateAction<boolean>>;
-  togglePopup: boolean;
-}
-
-const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
+const ChatPopup = () => {
   const { setMessages, messages: storedMessages } = useAppState();
   const [formEvent, setFormEvent] = useState<{
     error: unknown;
@@ -99,13 +92,11 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
     }, 100);
   };
 
-
-
   return (
     <div
       style={{
         zIndex: 10000000,
-        transform: togglePopup ? "translateX(0)" : "translateX(100%)",
+        // transform: togglePopup ? "translateX(0)" : "translateX(100%)",
         height: "100%",
       }}
       className="chatbot-sidepanel tw:fixed tw:top-0 tw:right-0 tw:bg-gray-100 tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:transform tw:transition-transform"
