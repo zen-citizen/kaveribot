@@ -19,26 +19,31 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
-chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
-  console.log("updated", tabId, info, tab);
-  if (!tab.url && !tab.pendingUrl) {
-    await chrome.sidePanel.setOptions({
-      tabId,
-      enabled: false,
-    });
-    return;
-  }
-  const url = new URL(tab.pendingUrl || tab.url);
-  // Enables the side panel only on the Kaveri portal
-  if (url.origin === ORIGIN) {
-    await chrome.sidePanel.setOptions({
-      tabId,
-      path: "index.html",
-      enabled: true,
-    });
-  }
-});
+const browser2workerMessages = {
+  openSidePanel: "openSidePanel",
+  getTabId: "getTabId",
+};
 
-chrome.tabs.onActivated.addListener(async (tab) => {
-  console.log("activated", tab);
+const handleOpenSidePanel = async (sendResponse) => {
+  let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tabs.length) return;
+  let currentTab = tabs[0];
+  sendResponse({ tabId: currentTab.id });
+};
+// Listen for messages from content script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type === browser2workerMessages.getTabId) {
+    handleOpenSidePanel(sendResponse);
+  }
+  if (message?.type === browser2workerMessages.openSidePanel) {
+    chrome.sidePanel.setOptions(
+      {
+        tabId: message.tabId,
+        path: "index.html",
+        enabled: true,
+      },
+      () => chrome.sidePanel.open({ tabId: message.tabId })
+    );
+  }
+  return true;
 });
