@@ -9,14 +9,7 @@
   "action": {
     "default_title": "Click to open Ask Zen Citizen"
   },
-  "side_panel": {
-    "default_path": "index.html"
-  },
-  "permissions": [
-    "storage",
-    "sidePanel",
-    "tabs"
-  ],
+  "permissions": ["storage", "sidePanel", "tabs"],
   "commands": {
     "_execute_action": {
       "suggested_key": {
@@ -25,5 +18,12 @@
       }
     }
   },
+  "content_scripts": [
+    {
+      "matches": ["https://kaveri.karnataka.gov.in/*"],
+      "js": ["cta.js"],
+      "css": ["assets/index.css"]
+    }
+  ],
   "host_permissions": ["https://kaveri.karnataka.gov.in/*"]
 }
