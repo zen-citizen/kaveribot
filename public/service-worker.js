@@ -40,7 +40,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendTabInfo(sendResponse);
   }
   if (message?.type === browser2workerMessages.toggleSidePanel) {
-    sidePanelOpen = !sidePanelOpen;
     if (sidePanelOpen) {
       chrome.sidePanel.setOptions(
         {
@@ -58,6 +57,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         () => chrome.sidePanel.open({ tabId: message.tabId })
       );
     }
+    sidePanelOpen = !sidePanelOpen;
   }
   return true;
 });
