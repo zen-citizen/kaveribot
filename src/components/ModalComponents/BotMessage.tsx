@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { FeedbackContainer } from "./index";
 import { VolumeX, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { useAppState } from "../../AppState";
 
 const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
 
@@ -131,6 +132,15 @@ export const BotMessage = ({ value }: { value: string }) => {
     window.speechSynthesis.speak(utterance);
     setIsSpeaking(true);
   };
+  const [feedbackValue, setFeedbackValue] = useState<"good" | "bad" | null>(
+    null
+  );
+  const { trackFeedback } = useAppState();
+  const handleFeedback = (value: "good" | "bad" | null) => {
+    if (value === feedbackValue) return;
+    setFeedbackValue(value);
+    trackFeedback(value);
+  };
   return (
     <div className="tw:flex-col tw:flex tw:gap-2">
       <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
@@ -178,7 +188,7 @@ export const BotMessage = ({ value }: { value: string }) => {
               ),
               code: ({
                 children,
-                inline
+                inline,
               }: {
                 children: React.ReactNode;
                 inline?: boolean;
@@ -211,23 +221,26 @@ export const BotMessage = ({ value }: { value: string }) => {
               ),
               td: ({ children }) => (
                 <td className="tw:py-2 tw:px-3 tw:border-t">{children}</td>
-              )
+              ),
             }}
           >
             {value}
           </ReactMarkdown>
           <div className="tw:text-right">
-          <button
-            onClick={handleSpeak}
-            className="tw!p-1 tw!text-gray-500 tw!hover:text-blue-600 tw!focus:outline-none!"
-            aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
-          >
-            {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
-          </button>
+            <button
+              onClick={handleSpeak}
+              className="tw!p-1 tw!text-gray-500 tw!hover:text-blue-600 tw!focus:outline-none!"
+              aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
+            >
+              {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+            </button>
           </div>
         </div>
       </div>
-      <FeedbackContainer />
+      <FeedbackContainer
+        feedbackValue={feedbackValue}
+        setFeedbackValue={handleFeedback}
+      />
     </div>
   );
 };
