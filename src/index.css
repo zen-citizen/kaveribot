@@ -35,3 +35,10 @@ html.kaveri-bot-active body > *:not(#kaveri-bot-app) {
   transition: margin-right 0.3s ease-in-out;
   margin-right: min(calc(100vw - 32px), 360px);
 } */
+
+#azc-btn {
+  @apply tw:fixed tw:bottom-[35%] tw:right-[1rem] tw:bg-zinc-700 tw:text-white tw:p-2 tw:cursor-pointer tw:focus:outline-none!;
+  transform: rotate(-90deg);
+  transform-origin: right;
+  z-index:100000;
+}
