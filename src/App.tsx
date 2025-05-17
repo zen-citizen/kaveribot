@@ -24,7 +24,6 @@ function App() {
     if (!window?.posthog) return;
     const posthog = window.posthog;
     console.log({posthog});
-    console.log(import.meta.env.VITE_ENV);
     if (import.meta.env.VITE_ENV === "production") {
       posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
         api_host: import.meta.env.VITE_POSTHOG_HOST,
