@@ -3,16 +3,27 @@
   "name": "Ask Zen Citizen",
   "version": "1.1",
   "description": "Get AI-powered assistance for marriage registration on Kaveri portal. (Unaffiliated with the Government of Karnataka)",
-  "action": {
-    "default_popup": "index.html"
+  "background": {
+    "service_worker": "service-worker.js"
   },
-  "permissions": ["storage"],
-  "host_permissions": ["https://kaveri.karnataka.gov.in/*"],
-  "content_scripts": [
-    {
-      "matches": ["https://kaveri.karnataka.gov.in/*"],
-      "js": ["assets/index.js"],
-      "css": ["assets/index.css"]
+  "action": {
+    "default_title": "Click to open Ask Zen Citizen"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "tabs"
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+B",
+        "mac": "Command+B"
+      }
     }
-  ]
+  },
+  "host_permissions": ["https://kaveri.karnataka.gov.in/*"]
 }
