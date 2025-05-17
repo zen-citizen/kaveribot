@@ -109,7 +109,6 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       }}
       className="chatbot-sidepanel tw:fixed tw:top-0 tw:right-0 tw:bg-gray-100 tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:transform tw:transition-transform"
     >
-
       {/* Tab Navigation */}
       <div className="tw:flex tw:pb-2">
         <button
@@ -128,7 +127,9 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
               ? "tw:border-zinc-700"
               : "tw:border-transparent tw:text-gray-500"
           }`}
-          onClick={() => setActiveTab("imageResizer")}
+          onClick={() => {
+            setActiveTab("imageResizer");
+          }}
         >
           Image Resizer
         </button>
