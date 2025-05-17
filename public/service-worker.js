@@ -20,30 +20,44 @@ chrome.sidePanel
   .catch((error) => console.error(error));
 
 const browser2workerMessages = {
-  openSidePanel: "openSidePanel",
+  toggleSidePanel: "toggleSidePanel",
   getTabId: "getTabId",
 };
 
-const handleOpenSidePanel = async (sendResponse) => {
+const sendTabInfo = async (sendResponse) => {
   let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tabs.length) return;
   let currentTab = tabs[0];
-  sendResponse({ tabId: currentTab.id });
+  let sidePanelOptions = await chrome.sidePanel.getOptions({
+    tabId: currentTab.id,
+  });
+  sendResponse({ tabId: currentTab.id, sidePanelOptions });
 };
 // Listen for messages from content script
+let sidePanelOpen = false;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === browser2workerMessages.getTabId) {
-    handleOpenSidePanel(sendResponse);
+    sendTabInfo(sendResponse);
   }
-  if (message?.type === browser2workerMessages.openSidePanel) {
-    chrome.sidePanel.setOptions(
-      {
-        tabId: message.tabId,
-        path: "index.html",
-        enabled: true,
-      },
-      () => chrome.sidePanel.open({ tabId: message.tabId })
-    );
+  if (message?.type === browser2workerMessages.toggleSidePanel) {
+    sidePanelOpen = !sidePanelOpen;
+    if (sidePanelOpen) {
+      chrome.sidePanel.setOptions(
+        {
+          tabId: message.tabId,
+          enabled: false,
+        },
+      );
+    } else {
+      chrome.sidePanel.setOptions(
+        {
+          tabId: message.tabId,
+          path: "index.html",
+          enabled: true,
+        },
+        () => chrome.sidePanel.open({ tabId: message.tabId })
+      );
+    }
   }
   return true;
 });

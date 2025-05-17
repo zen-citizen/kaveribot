@@ -4,19 +4,19 @@ button.textContent = "Ask Zen Citizen";
 document.body.appendChild(button);
 
 const browser2workerMessages = {
-  openSidePanel: "openSidePanel",
+  toggleSidePanel: "toggleSidePanel",
   getTabId: "getTabId",
 };
 
+let panelOpen = false;
+
 button.addEventListener("click", async () => {
   if (!chrome) return;
-  await chrome.runtime.sendMessage(
-    { type: browser2workerMessages.getTabId },
-    (response) => {
-      chrome.runtime.sendMessage({
-        type: browser2workerMessages.openSidePanel,
-        tabId: response.tabId,
-      });
-    }
-  );
+  let response = await chrome.runtime.sendMessage({
+    type: browser2workerMessages.getTabId,
+  });
+  chrome.runtime.sendMessage({
+    type: browser2workerMessages.toggleSidePanel,
+    tabId: response.tabId,
+  });
 });
