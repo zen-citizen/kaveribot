@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import axios from "axios";
-import { ChevronRight } from "lucide-react";
 import ZcLogo from "../assets/zc-logo.svg?react";
 
 import { Body, Form, Footer } from "./ModalComponents/index";
@@ -99,6 +98,8 @@ const ChatPopup = ({ setTogglePopup, togglePopup }: ChatPopupProps) => {
       el?.focus();
     }, 100);
   };
+
+
 
   return (
     <div
