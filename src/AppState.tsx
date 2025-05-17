@@ -6,6 +6,8 @@ type AppContext = {
     langSupport: boolean;
   };
   setMessages: (messages: Array<{ role: string; message: string }>) => void;
+  trackFeedback: (value: "good" | "bad" | null) => void;
+  trackMessageSent: () => void;
 };
 
 const AppState = createContext<AppContext>({
@@ -14,6 +16,8 @@ const AppState = createContext<AppContext>({
     langSupport: false,
   },
   setMessages: () => {},
+  trackFeedback: () => {},
+  trackMessageSent: () => {},
 });
 
 const useAppState = () => {

@@ -6,6 +6,7 @@ interface Window {
   SpeechRecognition: typeof SpeechRecognition;
   AudioContext: typeof AudioContext;
   webkitAudioContext: typeof AudioContext;
+  posthog: any;
 }
 
 interface SpeechRecognitionErrorEvent extends Event {
