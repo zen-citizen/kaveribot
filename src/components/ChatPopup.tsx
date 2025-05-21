@@ -6,8 +6,7 @@ import { Body, Form, Footer } from "./ModalComponents/index";
 import { useAppState } from "../AppState";
 import ImageResizer from "./ImageResizer";
 
-const baseURL =
-  import.meta.env.VITE_ZCGPT_API || `https://zc-gpt.vercel.app`;
+const baseURL = import.meta.env.VITE_ZCGPT_API || `https://zc-gpt.vercel.app`;
 
 const post = async (url: string, message: string) => {
   try {
@@ -93,15 +92,8 @@ const ChatPopup = () => {
   };
 
   return (
-    <div
-      style={{
-        zIndex: 10000000,
-        // transform: togglePopup ? "translateX(0)" : "translateX(100%)",
-        height: "100%",
-      }}
-      className="chatbot-sidepanel tw:fixed tw:top-0 tw:right-0 tw:bg-gray-100 tw:shadow-lg tw:flex tw:flex-col tw:overflow-hidden tw:transform tw:transition-transform"
-    >
-      {/* Tab Navigation */}
+    <div className="chatbot-sidepanel tw:bg-gray-100 tw:flex tw:flex-col tw:h-screen tw:overflow-hidden">
+      {/* First child - Tabs */}
       <div className="tw:flex tw:pb-2">
         <button
           className={`tw:border-b-3 tw:flex-1 tw:py-2 tw:text-center tw:font-medium tw:cursor-pointer ${
@@ -119,55 +111,59 @@ const ChatPopup = () => {
               ? "tw:border-zinc-700"
               : "tw:border-transparent tw:text-gray-500"
           }`}
-          onClick={() => {
-            setActiveTab("imageResizer");
-          }}
+          onClick={() => setActiveTab("imageResizer")}
         >
           Image Resizer
         </button>
       </div>
-      <>
-        {/* Chat Header */}
-        <div className="tw:bg-zinc-700 tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
-          <div className="tw:flex tw:items-center tw:gap-x-2">
-            <ZcLogo
-              className="tw:text-white tw:min-w-[30px]!"
-              width={30}
-              strokeWidth={1.5}
-            />
-            <h2 className="tw:text-md tw:font-semibold tw:text-white tw:mb-0 tw:whitespace-nowrap">
-              {activeTab === "chat" ? "Ask Zen Citizen" : "Image Resizer"}
-            </h2>
-          </div>
-          {activeTab === "chat" && (
-            <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">
-              Beta
-            </span>
-          )}
-        </div>
 
+      {/* Second child - Header */}
+      <div className="tw:bg-zinc-700 tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
+        <div className="tw:flex tw:items-center tw:gap-x-2">
+          <ZcLogo
+            className="tw:text-white tw:min-w-[30px]!"
+            width={30}
+            strokeWidth={1.5}
+          />
+          <h2 className="tw:text-md tw:font-semibold tw:text-white tw:mb-0 tw:whitespace-nowrap">
+            {activeTab === "chat" ? "Ask Zen Citizen" : "Image Resizer"}
+          </h2>
+        </div>
         {activeTab === "chat" && (
-          <div className="tw:flex tw:flex-col tw:flex-1 tw:justify-between">
+          <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">
+            Beta
+          </span>
+        )}
+      </div>
+
+      {/* Third child - Main content container */}
+      {activeTab === "chat" && (
+        <div className="tw:flex-1 tw:flex tw:flex-col tw:overflow-hidden">
+          <div className="tw:flex-1 tw:overflow-y-auto tw:p-4">
             <Body
               chatBodyRef={chatBodyRef}
               formEvent={formEvent}
               messages={messages}
             />
-            <div>
-              <Form
-                message={message}
-                sendMessage={sendMessage}
-                setMessage={setMessage}
-                formEvent={formEvent}
-                inputRef={inputRef}
-                loading={formEvent.loading}
-              />
-              <Footer />
-            </div>
           </div>
-        )}
-        {activeTab === "imageResizer" && <ImageResizer />}
-      </>
+          <div className="tw:flex-none">
+            <Form
+              message={message}
+              sendMessage={sendMessage}
+              setMessage={setMessage}
+              formEvent={formEvent}
+              inputRef={inputRef}
+              loading={formEvent.loading}
+            />
+            <Footer />
+          </div>
+        </div>
+      )}
+      {activeTab === "imageResizer" && (
+        <div className="tw:flex-1 tw:overflow-y-auto">
+          <ImageResizer />
+        </div>
+      )}
     </div>
   );
 };
