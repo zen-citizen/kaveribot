@@ -9,29 +9,23 @@ import {
 } from "./index";
 
 interface BodyProps {
-  formEvent: { errorMsg: string, error: unknown; response: unknown; loading: boolean };
+  formEvent: {
+    errorMsg: string;
+    error: unknown;
+    response: unknown;
+    loading: boolean;
+  };
   messages: RefObject<{ role: string; message: string }[]>;
-  chatBodyRef: RefObject<HTMLDivElement>; // ✅ Added missing prop
 }
 
-export const Body: React.FC<BodyProps> = ({
-  formEvent,
-  messages,
-  chatBodyRef,
-}) => {
+export const Body: React.FC<BodyProps> = ({ formEvent, messages }) => {
   return (
-    <div
-      className="tw:flex-1! tw:p-4 tw:overflow-y-auto! tw:max-h-[500px] tw:lg:max-h-[600px] tw:relative"
-      ref={chatBodyRef}
-    >
+    <div>
       <div className="message tw:bot-message tw:flex tw:flex-col tw:gap-6 tw:w-full tw:mb-3">
         <DefaultMessage />
         {messages.current.map((message, idx) => {
           return (
-            <div
-              key={`${message?.role}-${idx}`}
-              className={`tw:${message?.role}`}
-            >
+            <div key={`${message?.role}-${idx}`}>
               {message.role === "user" && (
                 <UserMessage value={message.message} />
               )}
