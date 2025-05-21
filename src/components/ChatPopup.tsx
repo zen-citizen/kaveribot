@@ -78,7 +78,15 @@ const ChatPopup = () => {
   const scrollToBottom = () => {
     if (chatBodyRef.current) {
       setTimeout(() => {
-        chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+        const userMsgDivs = Array.from(
+          document.querySelectorAll(".user-message")
+        );
+        if (!userMsgDivs.length) return;
+        const lastUserMsgDiv = userMsgDivs[userMsgDivs.length - 1];
+        if (!lastUserMsgDiv) return;
+        chatBodyRef.current.scrollTop =
+          // @ts-expect-error offsetTop is not defined on the element
+          lastUserMsgDiv.offsetTop;
       }, 10);
     }
   };
@@ -139,12 +147,11 @@ const ChatPopup = () => {
       {/* Third child - Main content container */}
       {activeTab === "chat" && (
         <div className="tw:flex-1 tw:flex tw:flex-col tw:overflow-hidden">
-          <div className="tw:flex-1 tw:overflow-y-auto tw:p-4">
-            <Body
-              chatBodyRef={chatBodyRef}
-              formEvent={formEvent}
-              messages={messages}
-            />
+          <div
+            ref={chatBodyRef}
+            className="tw:flex-1 tw:overflow-y-auto tw:p-4"
+          >
+            <Body formEvent={formEvent} messages={messages} />
           </div>
           <div className="tw:flex-none">
             <Form
