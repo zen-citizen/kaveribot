@@ -301,7 +301,11 @@ export const Form = ({
         </div>
       )}
 
-      <div className={`tw:flex! ${isLongMessage ? `tw:items-end!` : `tw:items-center!`} tw:relative`}>
+      <div
+        className={`tw:flex! ${
+          isLongMessage ? `tw:items-end!` : `tw:items-center!`
+        } tw:relative`}
+      >
         <textarea
           id="chat-input"
           className="tw:text-gray-800! tw:text-sm! tw:flex-1! tw:p-3 tw:pr-12 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none! tw:focus:ring-2 tw:focus:ring-[#003df5]/60 tw:max-h-64 tw:resize-none!"

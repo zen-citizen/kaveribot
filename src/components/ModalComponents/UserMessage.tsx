@@ -9,11 +9,13 @@ type CodeProps = {
 
 export const UserMessage = ({ value }: { value: string }) => {
   return (
-    <div className="message-text tw:text-neutral-50 tw:text-sm tw:bg-[#003df5] tw:px-5 tw:py-4 tw:rounded-lg tw:max-w-10/12 tw:ml-auto">
+    <div className="user-message message-text tw:text-neutral-50 tw:text-sm tw:bg-[#003df5] tw:px-5 tw:py-4 tw:rounded-lg tw:max-w-10/12 tw:ml-auto">
       <div className="markdown text-white">
         <ReactMarkdown
           components={{
-            p: ({ children }) => <p className="tw:mb-2! tw:last:mb-0!">{children}</p>,
+            p: ({ children }) => (
+              <p className="tw:mb-2! tw:last:mb-0!">{children}</p>
+            ),
             strong: ({ children }) => (
               <strong className="tw:font-bold">{children}</strong>
             ),
@@ -44,7 +46,7 @@ export const UserMessage = ({ value }: { value: string }) => {
                 <code className="tw:block bg-[#0135d8] tw:p-2 tw:rounded tw:font-mono tw:text-sm tw:overflow-x-auto tw:my-2">
                   {children}
                 </code>
-              )
+              ),
           }}
         >
           {value}
