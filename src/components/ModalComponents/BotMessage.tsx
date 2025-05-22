@@ -190,7 +190,7 @@ export const BotMessage = ({ value }: { value: string }) => {
                 children,
                 inline,
               }: {
-                children: React.ReactNode;
+                children?: React.ReactNode;
                 inline?: boolean;
               }) => {
                 return inline ? (

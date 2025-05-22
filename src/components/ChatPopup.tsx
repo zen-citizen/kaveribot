@@ -1,18 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRef, useState } from "react";
 import axios from "axios";
 import ZcLogo from "../assets/zc-logo.svg?react";
 
 import { Body, Form, Footer } from "./ModalComponents/index";
-import { useAppState } from "../AppState";
+import { Message, useAppState } from "../AppState";
 import ImageResizer from "./ImageResizer";
 
 const baseURL = import.meta.env.VITE_ZCGPT_API || `https://zc-gpt.vercel.app`;
 
-const post = async (url: string, message: string) => {
+const post = async (
+  url: string,
+  messages: { role: string; message: Message }[]
+) => {
   try {
     const response = await axios.post(
       baseURL + url,
-      { message },
+      {
+        contents: messages?.map((m) => ({
+          role: m.role,
+          parts: [
+            {
+              ...(m.message.text && { text: m.message.text }),
+              ...(m.message.audio && {
+                inlineData: {
+                  mimeType: "audio/webm",
+                  data: m.message.audio,
+                },
+              }),
+            },
+          ],
+        })),
+      },
       {
         headers: {
           "x-zc-key": import.meta.env.VITE_ZC_KEY,
@@ -20,7 +39,7 @@ const post = async (url: string, message: string) => {
       }
     );
     return { data: response?.data?.reply, error: null };
-  } catch (e) {
+  } catch (e: any) {
     return { data: null, error: e };
   }
 };
@@ -28,8 +47,8 @@ const post = async (url: string, message: string) => {
 const ChatPopup = () => {
   const { setMessages, messages: storedMessages } = useAppState();
   const [formEvent, setFormEvent] = useState<{
-    error: unknown;
-    response: unknown;
+    error: any;
+    response: any;
     loading: boolean;
     errorMsg: string;
   }>({
@@ -39,9 +58,9 @@ const ChatPopup = () => {
     errorMsg: "",
   });
   const [activeTab, setActiveTab] = useState<"chat" | "imageResizer">("chat");
-  const apiEndpoint = "/api/chat";
+  const apiEndpoint = "/api/chat2";
 
-  const sendMessage = async (message: string) => {
+  const sendMessage = async (message: Message) => {
     scrollToBottom();
     setMessage("");
     messages.current.push({ role: "user", message });
@@ -51,27 +70,26 @@ const ChatPopup = () => {
       error: null,
       response: null,
     }));
-    const { data, error } = await post(
-      apiEndpoint,
-      `${messages.current.map((m) => m.message).join("\n\n")}\n\n${message}`
-    );
+    const { data, error } = await post(apiEndpoint, messages.current);
     setFormEvent((prev) => ({
       ...prev,
       loading: false,
       error: error ? error : null,
-      errorMsg: error ? error?.response?.data?.error || error?.message : "",
+      errorMsg: error
+        ? error?.response?.data?.error?.toString() || error?.message
+        : "",
       response: data,
     }));
     focusOnInput();
     scrollToBottom();
     if (data) {
-      messages.current.push({ message: data, role: "model" });
+      messages.current.push({ message: { text: data }, role: "model" });
     }
     setMessages([...messages.current]);
   };
   const [message, setMessage] = useState("");
   const messages = useRef(storedMessages);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
@@ -84,6 +102,7 @@ const ChatPopup = () => {
         if (!userMsgDivs.length) return;
         const lastUserMsgDiv = userMsgDivs[userMsgDivs.length - 1];
         if (!lastUserMsgDiv) return;
+        // @ts-expect-error ts thinks chatBodyRef.current is null
         chatBodyRef.current.scrollTop =
           // @ts-expect-error offsetTop is not defined on the element
           lastUserMsgDiv.offsetTop;

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 // import ChatButton from "./components/ChatButton";
 import ChatPopup from "./components/ChatPopup";
-import { AppContext, AppState } from "./AppState";
+import { AppContext, AppState, Message } from "./AppState";
 import usePostHog from "./hooks/usePosthog";
+import RecordingProvider from "./components/RecordingContext";
 // import { PostHogProvider } from "posthog-js/react";
 
 function App() {
   const [messages, setMessages] = useState<
-    Array<{ role: string; message: string }>
+    Array<{ role: string; message: Message }>
   >([]);
   const featureFlags: AppContext["featureFlags"] = { langSupport: false };
 
@@ -46,10 +47,15 @@ function App() {
         trackMessageSent,
       }}
     >
-      <div id="kaveri-bot-app" className="app-container relative! z-[10000000]">
-        {/* <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} /> */}
-        <ChatPopup />
-      </div>
+      <RecordingProvider>
+        <div
+          id="kaveri-bot-app"
+          className="app-container relative! z-[10000000]"
+        >
+          {/* <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} /> */}
+          <ChatPopup />
+        </div>
+      </RecordingProvider>
     </AppState.Provider>
   );
 }

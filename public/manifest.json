@@ -25,5 +25,11 @@
       "css": ["assets/index.css"]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["iframe.html", "perm.js", "cta.js"],
+      "matches": ["https://kaveri.karnataka.gov.in/*"]
+    }
+  ],
   "host_permissions": ["https://kaveri.karnataka.gov.in/*"]
 }
