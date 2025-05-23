@@ -6,8 +6,8 @@
   font-size: 16px !important;
 }
 
-.message-text > * + * {
-  margin-top: 1.5em;
+.message-text {
+  @apply tw:space-y-5;
 }
 
 .message-text {

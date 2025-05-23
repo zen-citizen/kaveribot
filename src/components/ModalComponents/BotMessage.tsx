@@ -40,7 +40,7 @@ export const BotMessage = ({ value }: { value: string }) => {
 
   useEffect(() => {
     const audioElement = audioPlayerRef.current;
-    
+
     const handleEnded = () => {
       console.log("ended");
       setIsSpeaking(false);
@@ -51,26 +51,25 @@ export const BotMessage = ({ value }: { value: string }) => {
     };
 
     const handleError = (e: Event) => {
-      console.error('Audio playback error:', e);
+      console.error("Audio playback error:", e);
       setIsSpeaking(false);
     };
 
     if (audioElement) {
-      audioElement.addEventListener('ended', handleEnded);
-      audioElement.addEventListener('pause', handlePause);
-      audioElement.addEventListener('error', handleError);
+      audioElement.addEventListener("ended", handleEnded);
+      audioElement.addEventListener("pause", handlePause);
+      audioElement.addEventListener("error", handleError);
     }
 
     // Cleanup listeners when component unmounts
     return () => {
       if (audioElement) {
-        audioElement.removeEventListener('ended', handleEnded);
-        audioElement.removeEventListener('pause', handlePause);
-        audioElement.removeEventListener('error', handleError);
+        audioElement.removeEventListener("ended", handleEnded);
+        audioElement.removeEventListener("pause", handlePause);
+        audioElement.removeEventListener("error", handleError);
       }
     };
   }, [audioPlayerRef]);
-  
 
   const [feedbackValue, setFeedbackValue] = useState<"good" | "bad" | null>(
     null
@@ -87,6 +86,21 @@ export const BotMessage = ({ value }: { value: string }) => {
         Zen Citizen
       </div>
       <div className="message-text response-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-5 tw:rounded-lg tw:text-left tw:py-4">
+        <div className="tw:text-left tw:mb-3!">
+          <button
+            onClick={handleSpeak}
+            className="tw:p-1 tw:text-gray-500 tw:hover:text-gray-700 tw:cursor-pointer tw:focus:outline-none!"
+            aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
+          >
+            {loadingAudio ? (
+              <Loader size={16} />
+            ) : isSpeaking ? (
+              <VolumeX size={16} />
+            ) : (
+              <Volume2 size={16} />
+            )}
+          </button>
+        </div>
         <div className="markdown">
           <ReactMarkdown
             components={{
@@ -166,21 +180,6 @@ export const BotMessage = ({ value }: { value: string }) => {
           >
             {value}
           </ReactMarkdown>
-          <div className="tw:text-right">
-            <button
-              onClick={handleSpeak}
-              className="tw!p-1 tw!text-gray-500 tw!hover:text-blue-600 tw!focus:outline-none!"
-              aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
-            >
-              {loadingAudio ? (
-                <Loader size={16} />
-              ) : isSpeaking ? (
-                <VolumeX size={16} />
-              ) : (
-                <Volume2 size={16} />
-              )}
-            </button>
-          </div>
           <div>
             {audio && (
               <audio
