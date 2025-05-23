@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CircleStop, Mic, SendHorizontal } from "lucide-react";
-import { RefObject, useEffect } from "react";
-import { useRecordingContext } from "../../hooks/useRecording";
+import { RefObject } from "react";
+import { useRecordingContext } from "../RecordingContext";
 import { Message } from "../../AppState";
 
 interface ChatInputProps {

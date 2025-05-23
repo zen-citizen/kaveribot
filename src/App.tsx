@@ -4,6 +4,7 @@ import ChatPopup from "./components/ChatPopup";
 import { AppContext, AppState, Message } from "./AppState";
 import usePostHog from "./hooks/usePosthog";
 import RecordingProvider from "./components/RecordingContext";
+import { BotMessageAudioStoreProvider } from "./components/BotMessageAudioStore";
 // import { PostHogProvider } from "posthog-js/react";
 
 function App() {
@@ -47,15 +48,17 @@ function App() {
         trackMessageSent,
       }}
     >
-      <RecordingProvider>
-        <div
-          id="kaveri-bot-app"
-          className="app-container relative! z-[10000000]"
-        >
-          {/* <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} /> */}
-          <ChatPopup />
-        </div>
-      </RecordingProvider>
+      <BotMessageAudioStoreProvider>
+        <RecordingProvider>
+          <div
+            id="kaveri-bot-app"
+            className="app-container relative! z-[10000000]"
+          >
+            {/* <ChatButton togglePopup={togglePopup} setTogglePopup={setTogglePopup} /> */}
+            <ChatPopup />
+          </div>
+        </RecordingProvider>
+      </BotMessageAudioStoreProvider>
     </AppState.Provider>
   );
 }

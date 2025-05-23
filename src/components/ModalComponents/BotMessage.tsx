@@ -1,137 +1,77 @@
 import { useState, useRef, useEffect } from "react";
 import { FeedbackContainer } from "./index";
-import { VolumeX, Volume2 } from "lucide-react";
+import { VolumeX, Volume2, Loader } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useAppState } from "../../AppState";
-
+import { useBotMessageAudioStore } from "../BotMessageAudioStore";
 const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
 
 export const BotMessage = ({ value }: { value: string }) => {
+  const { getFromAudioStore } = useBotMessageAudioStore();
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const [availableVoices, setAvailableVoices] = useState<
-    SpeechSynthesisVoice[]
-  >([]);
+  const [loadingAudio, setLoadingAudio] = useState(false);
 
-  // Initialize and track available voices
+  const [audio, setAudio] = useState<string | null>(null);
+
+  const handleSpeak = async () => {
+    if (isSpeaking && audioPlayerRef.current) {
+      audioPlayerRef.current?.pause();
+      audioPlayerRef.current.currentTime = 0;
+      setIsSpeaking(false);
+      return;
+    }
+    if (audio) {
+      audioPlayerRef.current?.play();
+      setIsSpeaking(true);
+      return;
+    }
+    setLoadingAudio(true);
+    const _audio = await getFromAudioStore(value);
+    if (_audio) setAudio(_audio);
+    setLoadingAudio(false);
+    setTimeout(() => {
+      if (_audio && audioPlayerRef.current) {
+        audioPlayerRef.current.play();
+        setIsSpeaking(true);
+      }
+    }, 500);
+  };
+
   useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      setAvailableVoices(voices);
+    const audioElement = audioPlayerRef.current;
+    
+    const handleEnded = () => {
+      console.log("ended");
+      setIsSpeaking(false);
     };
 
-    // Load voices right away (might already be available in some browsers)
-    loadVoices();
-
-    // Chrome loads voices asynchronously, so we need to listen for the voiceschanged event
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
+    const handlePause = () => {
+      setIsSpeaking(false);
     };
-  }, []);
 
-  // Cleanup function for speech when component unmounts
-  useEffect(() => {
+    const handleError = (e: Event) => {
+      console.error('Audio playback error:', e);
+      setIsSpeaking(false);
+    };
+
+    if (audioElement) {
+      audioElement.addEventListener('ended', handleEnded);
+      audioElement.addEventListener('pause', handlePause);
+      audioElement.addEventListener('error', handleError);
+    }
+
+    // Cleanup listeners when component unmounts
     return () => {
-      if (speechSynthRef.current && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+      if (audioElement) {
+        audioElement.removeEventListener('ended', handleEnded);
+        audioElement.removeEventListener('pause', handlePause);
+        audioElement.removeEventListener('error', handleError);
       }
     };
-  }, []);
+  }, [audioPlayerRef]);
+  
 
-  const getSpeechLanguage = (): string => {
-    // Get language from localStorage, default to 'en-IN'
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(LANGUAGE_STORAGE_KEY) || "en-IN";
-    }
-    return "en-IN";
-  };
-
-  // Find the best matching voice for a given language code
-  const findBestVoice = (langCode: string): SpeechSynthesisVoice | null => {
-    if (!availableVoices || availableVoices.length === 0) {
-      return null;
-    }
-
-    // Try to find exact match
-    const exactMatch = availableVoices.find((voice) => voice.lang === langCode);
-    if (exactMatch) {
-      return exactMatch;
-    }
-
-    // Try to find a voice with the same language (ignoring region)
-    const langPrefix = langCode.split("-")[0].toLowerCase();
-    const prefixMatch = availableVoices.find((voice) =>
-      voice.lang.toLowerCase().startsWith(langPrefix + "-")
-    );
-    if (prefixMatch) {
-      return prefixMatch;
-    }
-
-    // If all else fails and it's not English, try to at least get a voice
-    // that has the correct base language
-    const anyMatch = availableVoices.find((voice) =>
-      voice.lang.toLowerCase().startsWith(langPrefix)
-    );
-    if (anyMatch) {
-      return anyMatch;
-    }
-
-    // If we can't find any matching voice, return null
-    // The browser will use its default voice
-    return null;
-  };
-
-  const handleSpeak = () => {
-    if (!window.speechSynthesis) {
-      alert("Speech synthesis is not supported in your browser.");
-      return;
-    }
-
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-      return;
-    }
-
-    // Create utterance
-    const utterance = new SpeechSynthesisUtterance(value);
-
-    // Get language from localStorage
-    const langCode = getSpeechLanguage();
-    utterance.lang = langCode;
-
-    // Try to find a voice for this language
-    const voice = findBestVoice(langCode);
-    if (voice) {
-      utterance.voice = voice;
-      console.log(
-        `Using voice: ${voice.name} (${voice.lang}) for language ${langCode}`
-      );
-    } else {
-      console.log(
-        `No specific voice found for ${langCode}, using browser default`
-      );
-    }
-
-    // Handle utterance events
-    utterance.onend = () => {
-      setIsSpeaking(false);
-    };
-
-    utterance.onerror = (event) => {
-      console.error("Speech synthesis error:", event);
-      setIsSpeaking(false);
-    };
-
-    // Store reference for cleanup
-    speechSynthRef.current = utterance;
-
-    // Start speaking
-    window.speechSynthesis.speak(utterance);
-    setIsSpeaking(true);
-  };
   const [feedbackValue, setFeedbackValue] = useState<"good" | "bad" | null>(
     null
   );
@@ -232,8 +172,33 @@ export const BotMessage = ({ value }: { value: string }) => {
               className="tw!p-1 tw!text-gray-500 tw!hover:text-blue-600 tw!focus:outline-none!"
               aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
             >
-              {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+              {loadingAudio ? (
+                <Loader size={16} />
+              ) : isSpeaking ? (
+                <VolumeX size={16} />
+              ) : (
+                <Volume2 size={16} />
+              )}
             </button>
+          </div>
+          <div>
+            {audio && (
+              <audio
+                ref={audioPlayerRef}
+                src={`data:audio/mp3;base64,${audio}`}
+                controls
+                className="tw:hidden"
+                onEnded={() => {
+                  setIsSpeaking(false);
+                }}
+                onPause={() => {
+                  setIsSpeaking(false);
+                }}
+                onError={() => {
+                  setIsSpeaking(false);
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

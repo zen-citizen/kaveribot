@@ -6,8 +6,7 @@ import ZcLogo from "../assets/zc-logo.svg?react";
 import { Body, Form, Footer } from "./ModalComponents/index";
 import { Message, useAppState } from "../AppState";
 import ImageResizer from "./ImageResizer";
-
-const baseURL = import.meta.env.VITE_ZCGPT_API || `https://zc-gpt.vercel.app`;
+import { baseURL } from "../constants";
 
 const post = async (
   url: string,
