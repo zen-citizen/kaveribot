@@ -1,11 +1,22 @@
 import { createContext, useContext } from "react";
+type Message =
+  | {
+      text: string;
+      audio?: never;
+    }
+  | { audio: string; text?: never };
 
 type AppContext = {
-  messages: Array<{ role: string; message: string }>;
+  messages: Array<{ role: string; message: Message }>;
   featureFlags: {
     langSupport: boolean;
   };
-  setMessages: (messages: Array<{ role: string; message: string }>) => void;
+  setMessages: (
+    messages: Array<{
+      role: string;
+      message: Message;
+    }>
+  ) => void;
   trackFeedback: (value: "good" | "bad" | null) => void;
   trackMessageSent: () => void;
 };
@@ -28,4 +39,4 @@ const useAppState = () => {
   return context;
 };
 
-export { AppState, useAppState, type AppContext };
+export { AppState, type Message, useAppState, type AppContext };
