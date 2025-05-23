@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import imageCompression from "browser-image-compression";
 import { Footer } from "./ModalComponents";
+import { CircleCheckIcon } from "lucide-react";
 
 const ImageResizer = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -141,7 +142,7 @@ const ImageResizer = () => {
       setProcessedImageUrl(compressedUrl);
       setImageInfo((prev) => ({
         ...prev,
-        processedSize: formatBytes(compressedFile.size),
+        processedSize: formatBytes(compressedFile.size, 0),
       }));
     } catch (error) {
       console.error("Error processing image:", error);
@@ -170,7 +171,9 @@ const ImageResizer = () => {
       <div className="tw:p-4 tw:flex tw:flex-col tw:gap-5 tw:flex-grow tw:overflow-y-auto">
         {/* Description */}
         <div className="tw:space-y-1">
-          <p className="tw:font-bold">Resize image to Kaveri specifications</p>
+          <p className="tw:font-bold tw:hidden">
+            Resize image to Kaveri specifications
+          </p>
           <p className="tw:text-gray-500">
             Upload your image and we will resize, format and compress to match
             requirements.
@@ -197,7 +200,7 @@ const ImageResizer = () => {
             <div className="tw:rounded-full tw:w-16 tw:h-16 tw:flex tw:items-center tw:justify-center tw:mb-[-5px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="tw:h-10 tw:w-14 tw:text-black"
+                className="tw:h-10 tw:w-14 tw:text-gray-400"
                 fill="none"
                 viewBox="0 0 26 20"
                 stroke="currentColor"
@@ -211,83 +214,76 @@ const ImageResizer = () => {
               </svg>
             </div>
 
-            <p className="tw:text-blue-500 tw:font-medium">Click to upload</p>
+            <p className="tw:text-blue-600 tw:font-medium">Click to upload</p>
             <p className="tw:text-gray-500">or drag and drop</p>
             <p className="tw:text-gray-400 tw:text-sm">
               Supported formats: JPG and PNG
             </p>
           </div>
         ) : (
-          <div className="tw:bg-white tw:rounded-md tw:p-4 tw:border tw:border-gray-200">
-            <div className="tw:aspect-w-4 tw:aspect-h-3 tw:mb-3">
-              <img
-                src={processedImageUrl}
-                alt="Processed Image"
-                className="tw:object-contain tw:w-full tw:h-full tw:rounded-md"
-              />
+          <>
+            <div className="tw:bg-white tw:rounded-md tw:p-2 tw:border tw:border-gray-200">
+              <div className="tw:aspect-w-4 tw:aspect-h-3">
+                <img
+                  src={processedImageUrl}
+                  alt="Processed Image"
+                  className="tw:object-contain tw:w-full tw:h-full"
+                />
+              </div>
+            </div>
+            <div className="tw:text-xs tw:flex tw:flex-col tw:gap-y-1 tw:text-gray-500">
+              <span>
+                Size: B2 ({targetWidth} x {targetHeight} px)
+              </span>
+              <span>New file size: {imageInfo.processedSize}</span>
             </div>
             {imageInfo.dimensions && (
               <div className="tw:text-sm tw:text-gray-500">
-                <p>Original size: {imageInfo.originalSize}</p>
-                <p>Processed size: {imageInfo.processedSize}</p>
-                <p>
-                  Dimensions: Resized to {targetWidth}x{targetHeight} pixels
-                  (B2)
+                <p className="tw:p-2 tw:rounded-sm tw:border tw:border-emerald-500 tw:flex tw:items-start tw:gap-x-2 tw:text-emerald-500 tw:mb-2">
+                  <CircleCheckIcon size={16} className="tw:mt-0.5" />
+                  <span>
+                    Your image has been resized to meet Kaveri requirements.
+                  </span>
                 </p>
+                {/* <p>
+                  Dimensions: {targetWidth}x{targetHeight} pixels (B2)
+                </p>
+                <p>New file size: {imageInfo.processedSize}</p> */}
               </div>
             )}
-          </div>
+          </>
         )}
-
-        {/* Slider for resolution */}
-        <div className="tw:mt-2 tw:hidden">
-          <div className="tw:flex tw:justify-between tw:mb-2">
-            <p className="tw:text-gray-500">Maximum Resolution (MB)</p>
-            <p className="tw:text-gray-600 tw:font-medium">
-              {maxSize.toFixed(1)} MB
-            </p>
-          </div>
-          <div className="tw:flex tw:items-center tw:gap-2">
-            <span className="tw:text-gray-500">0</span>
-            <input
-              type="range"
-              min="0.1"
-              max="1.9"
-              step="0.1"
-              value={maxSize}
-              onChange={handleSliderChange}
-              className="tw:flex-grow tw:h-1 tw:appearance-none tw:bg-gray-300 tw:rounded-full"
-            />
-            <span className="tw:bg-[#2a2347] tw:text-white tw:px-2 tw:py-1 tw:rounded-md">
-              1.9
-            </span>
-          </div>
-          <div className="tw:flex tw:justify-between tw:text-xs tw:text-gray-400 tw:mt-1">
-            <span>Lower quality, smaller file</span>
-            <span>Higher quality, larger file</span>
-          </div>
-        </div>
 
         {/* Status message */}
         {processing && (
-          <div className="tw:text-blue-500 tw:text-center">
+          <div className="tw:text-gray-500 tw:text-center">
             Processing image...
           </div>
         )}
 
         {/* Download button */}
-        <div className="tw:flex tw:justify-center tw:mt-2">
+        <div className="tw:flex tw:justify-center tw:mt-2 tw:gap-x-2">
           <button
             onClick={downloadImage}
-            className={`tw:py-2 tw:px-4 tw:rounded-md tw:font-medium tw:border tw:bg-blue-600${
+            className={`tw:py-2 tw:px-4 tw:rounded-md tw:font-medium ${
               processedImageUrl && !processing
-                ? "tw:bg-blue-100 tw:text-black tw:hover:bg-gray-300 tw:cursor-pointer"
-                : "tw:bg-gray-100 tw:text-gray-400 tw:cursor-not-allowed"
+                ? "tw:bg-gray-800 tw:text-gray-200 tw:hover:bg-gray-900 tw:cursor-pointer"
+                : "tw:bg-gray-200 tw:text-gray-400 tw:cursor-not-allowed"
             }`}
             disabled={!processedImageUrl || processing}
           >
             Download Image
           </button>
+        </div>
+
+        {/* New upload */}
+        <div className="tw:text-center tw:text-gray-500">
+          <span
+            onClick={() => setProcessedImageUrl(null)}
+            className="tw:cursor-pointer tw:text-blue-500"
+          >
+            New Upload
+          </span>
         </div>
       </div>
 
