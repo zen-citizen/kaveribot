@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RefObject } from "react";
 
 import {
@@ -7,15 +8,16 @@ import {
   UserMessage,
   BotMessage,
 } from "./index";
+import { Message } from "../../AppState";
 
 interface BodyProps {
   formEvent: {
     errorMsg: string;
-    error: unknown;
-    response: unknown;
+    error: any;
+    response: any;
     loading: boolean;
   };
-  messages: RefObject<{ role: string; message: string }[]>;
+  messages: RefObject<{ role: string; message: Message }[]>;
 }
 
 export const Body: React.FC<BodyProps> = ({ formEvent, messages }) => {
@@ -27,10 +29,13 @@ export const Body: React.FC<BodyProps> = ({ formEvent, messages }) => {
           return (
             <div key={`${message?.role}-${idx}`}>
               {message.role === "user" && (
-                <UserMessage value={message.message} />
+                <UserMessage
+                  value={message.message?.text || message.message.audio || ""}
+                  type={message.message.audio ? "audio" : "text"}
+                />
               )}
               {message.role === "model" && (
-                <BotMessage value={message.message} />
+                <BotMessage value={message.message?.text || ""} />
               )}
             </div>
           );

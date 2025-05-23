@@ -2,10 +2,29 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import svgr from "vite-plugin-svgr";
-// https://vite.dev/config/
+import pluginChecker from "vite-plugin-checker";
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), svgr()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    svgr(),
+    pluginChecker({
+      typescript: {
+        tsconfigPath: "./tsconfig.json",
+        buildMode: true,
+      },
+    }),
+  ],
+  server: {
+    // Enable TypeScript error overlay
+    hmr: {
+      overlay: true,
+    },
+  },
+  // Enable TypeScript error checking
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: undefined,
