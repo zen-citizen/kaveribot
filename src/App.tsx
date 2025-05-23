@@ -5,6 +5,7 @@ import { AppContext, AppState, Message } from "./AppState";
 import usePostHog from "./hooks/usePosthog";
 import RecordingProvider from "./components/RecordingContext";
 import { BotMessageAudioStoreProvider } from "./components/BotMessageAudioStore";
+import "./assets/kaveri-logo.png";
 // import { PostHogProvider } from "posthog-js/react";
 
 function App() {

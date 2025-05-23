@@ -37,8 +37,10 @@ html.kaveri-bot-active body > *:not(#kaveri-bot-app) {
 } */
 
 #azc-btn {
-  @apply tw:fixed tw:bottom-[35%] tw:right-[1rem] tw:bg-zinc-700 tw:text-white tw:p-2 tw:cursor-pointer tw:focus:outline-none!;
+  @apply tw:fixed tw:bottom-[35%] tw:right-[1.1rem] tw:bg-zinc-700 tw:text-white tw:p-3 tw:cursor-pointer tw:focus:outline-none! tw:rounded-t-lg;
   transform: rotate(-90deg);
   transform-origin: right;
   z-index:100000;
+  font-weight: 600;
+  letter-spacing: 0.09em;
 }
