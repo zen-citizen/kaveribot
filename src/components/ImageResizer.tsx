@@ -215,7 +215,7 @@ const ImageResizer = () => {
             </div>
 
             <p className="tw:text-blue-600 tw:font-medium">Click to upload</p>
-            <p className="tw:text-gray-500">or drag and drop</p>
+            <p className="tw:text-gray-500 tw:-mt-2">or drag and drop your image</p>
             <p className="tw:text-gray-400 tw:text-sm">
               Supported formats: JPG and PNG
             </p>
