@@ -233,9 +233,9 @@ const ImageResizer = () => {
             </div>
             <div className="tw:text-xs tw:flex tw:flex-col tw:gap-y-1 tw:text-gray-500">
               <span>
-                Size: B2 ({targetWidth} x {targetHeight} px)
+                Size: B2 ({targetWidth} x {targetHeight} px) ({imageInfo.processedSize})
               </span>
-              <span>New file size: {imageInfo.processedSize}</span>
+              {/* <span>New file size: {imageInfo.processedSize}</span> */}
             </div>
             {imageInfo.dimensions && (
               <div className="tw:text-sm tw:text-gray-500">
@@ -277,14 +277,14 @@ const ImageResizer = () => {
         </div>
 
         {/* New upload */}
-        <div className="tw:text-center tw:text-gray-500">
+        {processedImageUrl && <div className="tw:text-center tw:text-gray-500">
           <span
             onClick={() => setProcessedImageUrl(null)}
-            className="tw:cursor-pointer tw:text-blue-500"
+            className="tw:cursor-pointer tw:text-blue-600"
           >
             New Upload
           </span>
-        </div>
+        </div>}
       </div>
 
       {/* Footer */}
