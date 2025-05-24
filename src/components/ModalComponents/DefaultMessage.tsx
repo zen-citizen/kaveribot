@@ -22,6 +22,10 @@ export const DefaultMessage = () => {
           marriage online on the Kaveri portal.
           <em> We plan to expand to more services soon.</em>
         </p>
+        <p className="tw:text-xs tw:font-semibold tw:text-gray-400 tw:leading-[1.5] tw:mb-2!">
+          Please do not share any sensitive information such as Aadhaar number,
+          address, or contact details in the chat.
+        </p>
         <p className="tw:text-xs tw:font-semibold tw:text-gray-400 tw:leading-[1.5] tw:mb-0!">
           AI is occasionally inaccurate. Always verify important information.
         </p>
