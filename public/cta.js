@@ -1,6 +1,5 @@
 const button = document.createElement("button");
 button.id = "azc-btn";
-button.classList.add("closed");
 button.innerHTML = "<span>Ask Zen Citizen</span><span class='arrow'/>"
 document.body.appendChild(button);
 
