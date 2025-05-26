@@ -1,6 +1,6 @@
 const button = document.createElement("button");
 button.id = "azc-btn";
-button.textContent = "Ask Zen Citizen";
+button.innerHTML = "<span>Ask Zen Citizen</span><span class='arrow'/>"
 document.body.appendChild(button);
 
 const browser2workerMessages = {
@@ -9,7 +9,8 @@ const browser2workerMessages = {
 };
 
 button.addEventListener("click", async () => {
-  const iframe = document.createElement("iframe");
+  button.classList.toggle("open");
+  const iframe = document.getElementById("permissionsIFrame") || document.createElement("iframe");
   iframe.setAttribute("hidden", "hidden");
   iframe.setAttribute("id", "permissionsIFrame");
   iframe.setAttribute("allow", "microphone");

@@ -26,8 +26,8 @@
   "content_scripts": [
     {
       "matches": ["https://kaveri.karnataka.gov.in/*"],
-      "js": ["cta.js"],
-      "css": ["assets/index.css"]
+      "css": ["assets/index.css"],
+      "js": ["cta.js"]
     }
   ],
   "web_accessible_resources": [

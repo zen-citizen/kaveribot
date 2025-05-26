@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CircleStop, Mic, SendHorizontal } from "lucide-react";
+import { CircleStop, Mic, SendHorizontal, Trash, Trash2 } from "lucide-react";
 import { RefObject } from "react";
 import { useRecordingContext } from "../RecordingContext";
 import { Message } from "../../AppState";
@@ -77,9 +77,9 @@ export const Form = ({
               </>
             ) : !audioUrl && isRecording ? (
               <>
-                <div className="recording-indicator tw:flex! tw:items-center! tw:gap-2 tw:p-2 tw:bg-red-50 tw:border tw:border-red-200 tw:rounded-md">
-                  <div className="tw:flex-shrink-0! tw:h-3 tw:w-3 tw:bg-red-500 tw:rounded-full tw:animate-pulse"></div>
-                  <span className="tw:text-red-500 tw:font-medium tw:text-sm">
+                <div className="recording-indicator tw:flex! tw:items-center! tw:gap-2 tw:p-2 tw:bg-[#003df5]/10 tw:border tw:border-[#003df5]/20 tw:rounded-md">
+                  <div className="tw:flex-shrink-0! tw:h-3 tw:w-3 tw:bg-[#003df5] tw:rounded-full tw:animate-pulse"></div>
+                  <span className="tw:text-[#003df5] tw:font-medium tw:text-sm">
                     Recording...
                   </span>
                 </div>
@@ -132,6 +132,19 @@ export const Form = ({
             >
               {isRecording ? <CircleStop size={20} /> : <Mic size={18} />}
             </button>
+          )}
+
+          {!isRecording && audioUrl && (
+            <>
+              <button
+                type="button"
+                className={`tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700 tw:transition`}
+                onClick={() => clearAudio()}
+                aria-label={isRecording ? "Stop recording" : "Start recording"}
+              >
+                <Trash2 size={16} />
+              </button>
+            </>
           )}
 
           {(message?.trim()?.length > 0 || audioUrl) && (
