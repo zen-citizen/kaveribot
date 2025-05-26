@@ -10,9 +10,9 @@
     "default_title": "Click to open Ask Zen Citizen"
   },
   "icons": {
-    "16": "icon-16.png",
-    "48": "icon-48.png",
-    "128": "icon-128.png"
+    "16": "zc-logo.png",
+    "48": "zc-logo.png",
+    "128": "zc-logo.png"
   },
   "permissions": ["storage", "sidePanel", "tabs"],
   "commands": {
