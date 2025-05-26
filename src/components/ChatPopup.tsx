@@ -119,32 +119,8 @@ const ChatPopup = () => {
 
   return (
     <div className="chatbot-sidepanel tw:bg-gray-100 tw:flex tw:flex-col tw:h-screen tw:overflow-hidden">
-      {/* First child - Tabs */}
-      <div className="tw:flex tw:pb-2">
-        <button
-          className={`tw:border-b-3 tw:flex-1 tw:py-2 tw:text-center tw:font-medium tw:cursor-pointer ${
-            activeTab === "chat"
-              ? "tw:border-zinc-700"
-              : "tw:border-transparent tw:text-gray-500"
-          }`}
-          onClick={() => setActiveTab("chat")}
-        >
-          Chat
-        </button>
-        <button
-          className={`tw:border-b-3 tw:flex-1 tw:py-3 tw:text-center tw:font-medium tw:cursor-pointer ${
-            activeTab === "imageResizer"
-              ? "tw:border-zinc-700"
-              : "tw:border-transparent tw:text-gray-500"
-          }`}
-          onClick={() => setActiveTab("imageResizer")}
-        >
-          Image Resizer
-        </button>
-      </div>
-
-      {/* Second child - Header */}
-      <div className="tw:bg-zinc-700 tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
+      {/* First child - Header */}
+      <div className="tw:bg-neutral-600 tw:px-4 tw:py-3 tw:flex tw:items-center tw:gap-3">
         <div className="tw:flex tw:items-center tw:gap-x-2">
           <ZcLogo
             className="tw:text-white tw:min-w-[30px]!"
@@ -152,14 +128,36 @@ const ChatPopup = () => {
             strokeWidth={1.5}
           />
           <h2 className="tw:text-md tw:font-semibold tw:text-white tw:mb-0 tw:whitespace-nowrap">
-            {activeTab === "chat" ? "Ask Zen Citizen" : "Image Resizer"}
+            Ask Zen Citizen
           </h2>
         </div>
-        {activeTab === "chat" && (
-          <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">
-            Beta
-          </span>
-        )}
+        <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">
+          Beta
+        </span>
+      </div>
+
+      {/* Second child - Tabs */}
+      <div className="tw:flex">
+        <button
+          className={`tw:flex-1 tw:py-2 tw:text-center tw:font-medium tw:cursor-pointer ${
+            activeTab === "chat"
+              ? "tw:font-semibold tw:underline tw:underline-offset-5 tw:decoration-3"
+              : "tw:bg-neutral-200 tw:text-gray-500"
+          }`}
+          onClick={() => setActiveTab("chat")}
+        >
+          Chat
+        </button>
+        <button
+          className={`tw:flex-1 tw:py-3 tw:text-center tw:font-medium tw:cursor-pointer ${
+            activeTab === "imageResizer"
+              ? "tw:font-semibold tw:underline tw:underline-offset-5 tw:decoration-3"
+              : "tw:bg-neutral-200 tw:text-gray-500"
+          }`}
+          onClick={() => setActiveTab("imageResizer")}
+        >
+          Image Resizer
+        </button>
       </div>
 
       {/* Third child - Main content container */}

@@ -168,10 +168,10 @@ const ImageResizer = () => {
   return (
     <div className="tw:flex tw:flex-col tw:h-full">
       {/* Main content */}
-      <div className="tw:p-4 tw:flex tw:flex-col tw:gap-5 tw:flex-grow tw:overflow-y-auto">
+      <div className="tw:p-4 tw:flex tw:flex-col tw:gap-4 tw:flex-grow tw:overflow-y-auto">
         {/* Description */}
         <div className="tw:space-y-1">
-          <p className="tw:font-bold tw:hidden">
+          <p className="tw:font-bold tw:text-gray-500">
             Resize image to Kaveri specifications
           </p>
           <p className="tw:text-gray-500">
@@ -215,7 +215,9 @@ const ImageResizer = () => {
             </div>
 
             <p className="tw:text-blue-600 tw:font-medium">Click to upload</p>
-            <p className="tw:text-gray-500 tw:-mt-2">or drag and drop your image</p>
+            <p className="tw:text-gray-500 tw:-mt-2">
+              or drag and drop your image
+            </p>
             <p className="tw:text-gray-400 tw:text-sm">
               Supported formats: JPG and PNG
             </p>
@@ -231,16 +233,10 @@ const ImageResizer = () => {
                 />
               </div>
             </div>
-            <div className="tw:text-xs tw:flex tw:flex-col tw:gap-y-1 tw:text-gray-500">
-              <span>
-                Size: B2 ({targetWidth} x {targetHeight} px) ({imageInfo.processedSize})
-              </span>
-              {/* <span>New file size: {imageInfo.processedSize}</span> */}
-            </div>
             {imageInfo.dimensions && (
-              <div className="tw:text-sm tw:text-gray-500">
-                <p className="tw:p-2 tw:rounded-sm tw:border tw:border-emerald-500 tw:flex tw:items-start tw:gap-x-2 tw:text-emerald-500 tw:mb-2">
-                  <CircleCheckIcon size={16} className="tw:mt-0.5" />
+              <div className="tw:text-sm tw:text-gray-500 tw:-mb-2">
+                <p className="tw:p-2 tw:rounded-sm tw:border tw:border-emerald-500 tw:flex tw:items-start tw:gap-x-2 tw:text-emerald-500">
+                  <CircleCheckIcon size={24} className="tw:mt-0.5" />
                   <span>
                     Your image has been resized to meet Kaveri requirements.
                   </span>
@@ -251,6 +247,13 @@ const ImageResizer = () => {
                 <p>New file size: {imageInfo.processedSize}</p> */}
               </div>
             )}
+            <div className="tw:text-xs tw:flex tw:flex-col tw:gap-y-1 tw:text-gray-500 tw:text-center">
+              <span>
+                New File Size: B2 ({targetWidth} x {targetHeight} px) (
+                {imageInfo.processedSize})
+              </span>
+              {/* <span>New file size: {imageInfo.processedSize}</span> */}
+            </div>
           </>
         )}
 
@@ -277,14 +280,16 @@ const ImageResizer = () => {
         </div>
 
         {/* New upload */}
-        {processedImageUrl && <div className="tw:text-center tw:text-gray-500">
-          <span
-            onClick={() => setProcessedImageUrl(null)}
-            className="tw:cursor-pointer tw:text-blue-600"
-          >
-            New Upload
-          </span>
-        </div>}
+        {processedImageUrl && (
+          <div className="tw:text-center tw:text-gray-500">
+            <span
+              onClick={() => setProcessedImageUrl(null)}
+              className="tw:cursor-pointer tw:text-blue-600"
+            >
+              Resize another image
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
