@@ -93,11 +93,11 @@ export const BotMessage = ({ value }: { value: string }) => {
             aria-label={isSpeaking ? "Stop speaking" : "Speak message"}
           >
             {loadingAudio ? (
-              <Loader size={16} />
+              <Loader size={20} />
             ) : isSpeaking ? (
-              <VolumeX size={16} />
+              <VolumeX size={20} />
             ) : (
-              <Volume2 size={16} />
+              <Volume2 size={20} />
             )}
           </button>
         </div>
