@@ -1,4 +1,6 @@
+tsconfig.*.tsbuildinfo
 node_modules
 dist
 build
 .env
+image-processor
