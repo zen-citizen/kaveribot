@@ -10,9 +10,6 @@
 
 .message-text {
   @apply tw:space-y-5;
-}
-
-.message-text {
   line-height: 1.5;
 }
 

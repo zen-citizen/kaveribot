@@ -85,7 +85,7 @@ export const BotMessage = ({ value }: { value: string }) => {
         Zen Citizen
       </div>
       <div className="message-text response-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-3.5 tw:py-2 tw:rounded-lg tw:text-left ">
-        <div className="tw:text-left tw:mb-3!">
+        <div className="tw:text-left tw:mb-2!">
           <button
             onClick={handleSpeak}
             className="tw:p-1 tw:text-gray-500 tw:hover:text-gray-700 tw:cursor-pointer tw:focus:outline-none!"
