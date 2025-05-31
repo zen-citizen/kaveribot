@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <footer className="tw:p-4 tw:border-t tw:border-gray-200 tw:text-gray-600 tw:text-sm">
+    <footer className="tw:p-3 tw:border-t tw:border-gray-200 tw:text-gray-600 tw:text-sm">
       <div className="tw:flex! tw:justify-between!">
         <div>
           Powered by{" "}
