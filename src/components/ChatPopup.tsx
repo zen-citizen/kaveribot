@@ -147,7 +147,7 @@ const ChatPopup = () => {
       {/* Second child - Tabs */}
       <div className="tw:flex">
         <button
-          className={`tw:flex-1 tw:py-2 tw:text-center tw:font-medium tw:cursor-pointer ${
+          className={`tw:flex-1 tw:py-1.75 tw:text-center tw:font-medium tw:cursor-pointer ${
             activeTab === "chat"
               ? "tw:font-semibold tw:underline tw:underline-offset-5 tw:decoration-3"
               : "tw:bg-neutral-200 tw:text-gray-500"
@@ -157,7 +157,7 @@ const ChatPopup = () => {
           Chat
         </button>
         <button
-          className={`tw:flex-1 tw:py-3 tw:text-center tw:font-medium tw:cursor-pointer ${
+          className={`tw:flex-1 tw:py-1.75 tw:text-center tw:font-medium tw:cursor-pointer ${
             activeTab === "imageResizer"
               ? "tw:font-semibold tw:underline tw:underline-offset-5 tw:decoration-3"
               : "tw:bg-neutral-200 tw:text-gray-500"
