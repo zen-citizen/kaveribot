@@ -28,9 +28,6 @@ const useRecordingContext = () => {
   return useContext(RecordingContext);
 };
 
-
-
-
 const RecordingProvider = ({ children }: { children: React.ReactNode }) => {
   // State to manage if audio is currently being recorded
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -113,7 +110,6 @@ const RecordingProvider = ({ children }: { children: React.ReactNode }) => {
           // The result will be in the format "data:audio/webm;base64,..."
           // @ts-expect-error result could be null
           const base64Audio = reader.result?.split(",")?.[1]; // Get only the Base64 part
-          console.log("Audio Base64:", base64Audio); // Log the Base64 string
           resolve(base64Audio as string);
         };
 

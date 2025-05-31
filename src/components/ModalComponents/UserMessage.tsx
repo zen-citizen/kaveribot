@@ -15,7 +15,11 @@ export const UserMessage = ({
   type: "text" | "audio";
 }) => {
   return (
-    <div className="user-message message-text tw:text-neutral-50 tw:text-sm tw:bg-[#003df5] tw:px-5 tw:py-4 tw:rounded-lg tw:max-w-10/12 tw:ml-auto">
+    <div
+      className={`user-message message-text tw:text-neutral-50 tw:text-sm tw:bg-[#003df5] ${
+        type !== "audio" ? "tw:px-3.5 tw:py-4" : "tw:px-[2px] tw:py-[2px]"
+      } tw:rounded-lg tw:max-w-10/12 tw:ml-auto`}
+    >
       {type === "text" && (
         <div className="markdown text-white">
           <ReactMarkdown

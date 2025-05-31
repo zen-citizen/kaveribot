@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CircleStop, Mic, SendHorizontal, Trash, Trash2 } from "lucide-react";
-import { RefObject } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { useRecordingContext } from "../RecordingContext";
 import { Message } from "../../AppState";
 
@@ -28,6 +28,17 @@ export const Form = ({
     audioBase64,
     clearAudio,
   } = useRecordingContext();
+
+  useEffect(() => {
+    const textarea = inputRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height =
+        textarea.scrollHeight <= 64 ? `44px` : `${textarea.scrollHeight}px`;
+      textarea.style.overflowY = "auto";
+      textarea.style.maxHeight = "200px";
+    }
+  }, [message, inputRef]);
 
   return (
     <form
@@ -60,12 +71,11 @@ export const Form = ({
       )} */}
 
       <div
-        className={`tw:flex! tw-justify-between ${
+        className={`tw:flex! tw:justify-between tw:gap-x-2 ${
           isLongMessage ? `tw:items-end!` : `tw:items-center!`
         } tw:relative`}
       >
         <div className="tw:w-full">
-          {/* <audio src="file:///Users/santhosh/Downloads/test.mp3" /> */}
           <div className="tw:block">
             {!isRecording && audioUrl ? (
               <>
@@ -88,7 +98,6 @@ export const Form = ({
               <textarea
                 id="chat-input"
                 className="tw:w-full tw:text-gray-800! tw:text-sm! tw:flex-1! tw:p-3 tw:pr-12 tw:border tw:border-gray-300 tw:rounded-md tw:focus:outline-none! tw:focus:ring-2 tw:focus:ring-[#003df5]/60 tw:max-h-64 tw:resize-none!"
-                rows={isLongMessage ? 4 : 1}
                 placeholder={
                   isRecording ? "Listening..." : "Type your message here..."
                 }
@@ -110,6 +119,18 @@ export const Form = ({
         </div>
 
         <div className="tw:flex! tw:gap-2">
+          {!isRecording && audioUrl && (
+            <>
+              <button
+                type="button"
+                className={`tw:p-2 tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700 tw:transition`}
+                onClick={() => clearAudio()}
+                aria-label={isRecording ? "Stop recording" : "Start recording"}
+              >
+                <Trash2 size={16} />
+              </button>
+            </>
+          )}
           {(isRecording || !message) && (
             <button
               type="button"
@@ -133,20 +154,6 @@ export const Form = ({
               {isRecording ? <CircleStop size={20} /> : <Mic size={18} />}
             </button>
           )}
-
-          {!isRecording && audioUrl && (
-            <>
-              <button
-                type="button"
-                className={`tw:cursor-pointer tw:text-gray-500 tw:hover:text-gray-700 tw:transition`}
-                onClick={() => clearAudio()}
-                aria-label={isRecording ? "Stop recording" : "Start recording"}
-              >
-                <Trash2 size={16} />
-              </button>
-            </>
-          )}
-
           {(message?.trim()?.length > 0 || audioUrl) && (
             <button
               type="submit"

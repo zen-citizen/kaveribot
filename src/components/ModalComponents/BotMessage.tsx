@@ -4,7 +4,7 @@ import { VolumeX, Volume2, Loader } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useAppState } from "../../AppState";
 import { useBotMessageAudioStore } from "../BotMessageAudioStore";
-const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
+// const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
 
 export const BotMessage = ({ value }: { value: string }) => {
   const { getFromAudioStore } = useBotMessageAudioStore();
@@ -42,7 +42,6 @@ export const BotMessage = ({ value }: { value: string }) => {
     const audioElement = audioPlayerRef.current;
 
     const handleEnded = () => {
-      console.log("ended");
       setIsSpeaking(false);
     };
 
@@ -85,7 +84,7 @@ export const BotMessage = ({ value }: { value: string }) => {
       <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
         Zen Citizen
       </div>
-      <div className="message-text response-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-5 tw:rounded-lg tw:text-left tw:py-4">
+      <div className="message-text response-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-3.5 tw:py-2 tw:rounded-lg tw:text-left ">
         <div className="tw:text-left tw:mb-3!">
           <button
             onClick={handleSpeak}

@@ -9,14 +9,11 @@ import {
   BotMessage,
 } from "./index";
 import { Message } from "../../AppState";
+import { CircleStop, X } from "lucide-react";
+import { FormEvent } from "../../types";
 
 interface BodyProps {
-  formEvent: {
-    errorMsg: string;
-    error: any;
-    response: any;
-    loading: boolean;
-  };
+  formEvent: FormEvent;
   messages: RefObject<{ role: string; message: Message }[]>;
 }
 
@@ -40,7 +37,20 @@ export const Body: React.FC<BodyProps> = ({ formEvent, messages }) => {
             </div>
           );
         })}
-        {formEvent.loading && <Loader />}
+        {formEvent.loading && (
+          <div className="tw:flex tw:gap-2 tw:items-center">
+            <Loader />
+            <span
+              className="show-with-delay"
+              title="Stop"
+              onClick={() => {
+                formEvent.abortRequest();
+              }}
+            >
+              <CircleStop className="tw:cursor-pointer" size={16} />
+            </span>
+          </div>
+        )}
         {formEvent.error && <ErrorMessage error={formEvent?.errorMsg} />}
       </div>
     </div>

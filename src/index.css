@@ -54,4 +54,19 @@ html.kaveri-bot-active body > *:not(#kaveri-bot-app) {
 #azc-btn.open span.arrow::after {
   transform: rotate(180deg);
 }
+.show-with-delay {
+  opacity: 0;
+  animation: fadeIn 3s ease-in-out forwards;
+}
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

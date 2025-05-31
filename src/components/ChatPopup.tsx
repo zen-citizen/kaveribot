@@ -7,10 +7,12 @@ import { Body, Form, Footer } from "./ModalComponents/index";
 import { Message, useAppState } from "../AppState";
 import ImageResizer from "./ImageResizer";
 import { baseURL } from "../constants";
+import { FormEvent } from "../types";
 
 const post = async (
   url: string,
-  messages: { role: string; message: Message }[]
+  messages: { role: string; message: Message }[],
+  abortController: AbortController
 ) => {
   try {
     const response = await axios.post(
@@ -35,26 +37,26 @@ const post = async (
         headers: {
           "x-zc-key": import.meta.env.VITE_ZC_KEY,
         },
+        signal: abortController.signal,
       }
     );
     return { data: response?.data?.reply, error: null };
   } catch (e: any) {
+    if (e.code === "ERR_CANCELED") {
+      return { data: null, error: new Error("Request cancelled.") };
+    }
     return { data: null, error: e };
   }
 };
 
 const ChatPopup = () => {
   const { setMessages, messages: storedMessages } = useAppState();
-  const [formEvent, setFormEvent] = useState<{
-    error: any;
-    response: any;
-    loading: boolean;
-    errorMsg: string;
-  }>({
+  const [formEvent, setFormEvent] = useState<FormEvent>({
     error: null,
     response: null,
     loading: false,
     errorMsg: "",
+    abortRequest: () => void 0,
   });
   const [activeTab, setActiveTab] = useState<"chat" | "imageResizer">("chat");
   const apiEndpoint = "/api/chat2";
@@ -63,13 +65,19 @@ const ChatPopup = () => {
     scrollToBottom();
     setMessage("");
     messages.current.push({ role: "user", message });
+    const abortController = new AbortController();
     setFormEvent((prev) => ({
       ...prev,
       loading: true,
       error: null,
       response: null,
+      abortRequest: () => abortController.abort(),
     }));
-    const { data, error } = await post(apiEndpoint, messages.current);
+    const { data, error } = await post(
+      apiEndpoint,
+      messages.current,
+      abortController
+    );
     setFormEvent((prev) => ({
       ...prev,
       loading: false,
