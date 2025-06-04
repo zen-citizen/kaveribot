@@ -4,8 +4,8 @@ export const DefaultMessage = () => {
       <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
         Zen Citizen Bot
       </div>
-      <div className="message-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-3.5 tw:rounded-lg tw:text-left tw:py-4">
-        <p>Hi! 👋</p>
+      <div className="message-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-5 tw:rounded-lg tw:text-left tw:py-4">
+        <p>Namaskara! 🙏</p>
         <p>
           We’re{" "}
           <a

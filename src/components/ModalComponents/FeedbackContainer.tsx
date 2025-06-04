@@ -5,7 +5,7 @@ export const FeedbackContainer = ({
   setFeedbackValue,
 }: {
   feedbackValue: "good" | "bad" | null;
-  setFeedbackValue: (value: "good" | "bad" | null) => void;
+  setFeedbackValue: (value: "good" | "bad") => void;
 }) => {
   return (
     <div className="feedback-container">

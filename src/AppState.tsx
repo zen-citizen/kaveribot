@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { Events } from "./hooks/useEventTracker";
 type Message =
   | {
       text: string;
@@ -17,8 +18,8 @@ type AppContext = {
       message: Message;
     }>
   ) => void;
-  trackFeedback: (value: "good" | "bad" | null) => void;
-  trackMessageSent: () => void;
+  sessionId: string;
+  trackEvent: (args: { eventName: Events, eventData: any }) => any,
 };
 
 const AppState = createContext<AppContext>({
@@ -27,8 +28,8 @@ const AppState = createContext<AppContext>({
     langSupport: false,
   },
   setMessages: () => {},
-  trackFeedback: () => {},
-  trackMessageSent: () => {},
+  sessionId: Math.random().toString(36).substring(2, 15),
+  trackEvent: () => {},
 });
 
 const useAppState = () => {

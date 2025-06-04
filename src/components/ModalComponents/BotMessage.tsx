@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import { useAppState } from "../../AppState";
 import { useBotMessageAudioStore } from "../BotMessageAudioStore";
 // const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
+import { Events } from "../../hooks/useEventTracker";
+const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
 
 export const BotMessage = ({ value }: { value: string }) => {
   const { getFromAudioStore } = useBotMessageAudioStore();
@@ -73,11 +75,16 @@ export const BotMessage = ({ value }: { value: string }) => {
   const [feedbackValue, setFeedbackValue] = useState<"good" | "bad" | null>(
     null
   );
-  const { trackFeedback } = useAppState();
+  const { trackEvent } = useAppState();
   const handleFeedback = (value: "good" | "bad" | null) => {
     if (value === feedbackValue) return;
     setFeedbackValue(value);
-    trackFeedback(value);
+    trackEvent({
+      eventName: value === "good" ? Events.feedbackGood : Events.feedbackBad,
+      eventData: {
+        message: value
+      }
+    });
   };
   return (
     <div className="tw:flex-col tw:flex tw:gap-2">
