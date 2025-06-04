@@ -32,9 +32,8 @@ export const Form = ({
   useEffect(() => {
     const textarea = inputRef.current;
     if (textarea) {
-      textarea.style.height = "auto";
       textarea.style.height =
-        textarea.scrollHeight <= 64 ? `44px` : `${textarea.scrollHeight}px`;
+        textarea.scrollHeight <= 64 || textarea.scrollHeight > 200 ? `44px` : `${textarea.scrollHeight}px`;
       textarea.style.overflowY = "auto";
       textarea.style.maxHeight = "200px";
     }
