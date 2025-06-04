@@ -8,6 +8,7 @@ import { Message, useAppState } from "../AppState";
 import ImageResizer from "./ImageResizer";
 import { baseURL } from "../constants";
 import { FormEvent } from "../types";
+import { Events } from "../hooks/useEventTracker";
 
 const post = async (
   url: string,
@@ -60,6 +61,7 @@ const ChatPopup = () => {
   });
   const [activeTab, setActiveTab] = useState<"chat" | "imageResizer">("chat");
   const apiEndpoint = "/api/chat2";
+  const { trackEvent } = useAppState();
 
   const sendMessage = async (message: Message) => {
     scrollToBottom();
@@ -73,6 +75,10 @@ const ChatPopup = () => {
       response: null,
       abortRequest: () => abortController.abort(),
     }));
+
+    if (message.text) {
+      trackEvent({ eventName: Events.messageSent, eventData: { message: message.text }})
+    }
     const { data, error } = await post(
       apiEndpoint,
       messages.current,
@@ -87,6 +93,9 @@ const ChatPopup = () => {
         : "",
       response: data,
     }));
+    if (!error) {
+      trackEvent({ eventName: Events.messageReceived, eventData: { message: data }})
+    }
     focusOnInput();
     scrollToBottom();
     if (data) {
@@ -136,7 +145,7 @@ const ChatPopup = () => {
             strokeWidth={1.5}
           />
           <h2 className="tw:text-md tw:font-semibold tw:text-white tw:mb-0 tw:whitespace-nowrap">
-            Ask Zen Citizen
+            Ask Spashta
           </h2>
         </div>
         <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">

@@ -36,16 +36,17 @@ html.kaveri-bot-active body > *:not(#kaveri-bot-app) {
 } */
 
 #azc-btn {
-  @apply tw:fixed tw:bottom-[35%] tw:right-[1.1rem] tw:bg-zinc-700 tw:text-white tw:p-3 tw:cursor-pointer tw:focus:outline-none! tw:rounded-t-lg tw:flex tw:items-center tw:justify-center tw:gap-x-2;
+  @apply tw:fixed! tw:bottom-[35%]! tw:right-[1.1rem]! tw:bg-zinc-700! tw:text-white! tw:p-3! tw:cursor-pointer! tw:focus:outline-none! tw:rounded-t-lg! tw:flex! tw:items-center! tw:justify-center! tw:gap-x-2!;
   transform: rotate(-90deg);
   transform-origin: right;
   z-index: 100000;
   font-weight: 600;
   letter-spacing: 0.09em;
+  font-size: 14px !important;
 }
 #azc-btn span.arrow::after {
   content: "▲";
-  @apply tw:inline-flex tw:items-center tw:justify-center tw:text-white tw:w-3 tw:h-3 tw:text-sm;
+  @apply tw:inline-flex! tw:items-center! tw:justify-center! tw:text-white! tw:w-3! tw:h-3! tw:text-sm!;
   transform: rotate(0deg);
 }
 #azc-btn.open span.arrow::after {

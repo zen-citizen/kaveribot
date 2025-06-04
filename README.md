@@ -16,7 +16,7 @@ The extension files will be in `dist` folder.
 - From settings, go to `Extensions -> Manage Extensions`
 - Click `Load unpacked` and select the `dist` folder in this project
 - If the extension loaded successfully, you should see `Kaveri Bot` in your extensions list.
-- Go to `kaveri.karnataka.gov.in` and click on the "Ask Zen Citizen" button and you'll see the bot open up on the sidepanel.
+- Go to `kaveri.karnataka.gov.in` and click on the "Ask Spashta" button and you'll see the bot open up on the sidepanel.
 
 ## To create a new release of the extension (zip file):
 

@@ -1,6 +1,6 @@
 const button = document.createElement("button");
 button.id = "azc-btn";
-button.innerHTML = "<span>Ask Zen Citizen</span><span class='arrow'/>"
+button.innerHTML = "<span>Ask Spashta</span><span class='arrow'/>"
 document.body.appendChild(button);
 
 const browser2workerMessages = {

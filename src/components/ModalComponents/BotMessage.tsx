@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import { useAppState } from "../../AppState";
 import { useBotMessageAudioStore } from "../BotMessageAudioStore";
 // const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
+import { Events } from "../../hooks/useEventTracker";
+const LANGUAGE_STORAGE_KEY = "kaveribot_language_preference";
 
 export const BotMessage = ({ value }: { value: string }) => {
   const { getFromAudioStore } = useBotMessageAudioStore();
@@ -73,17 +75,20 @@ export const BotMessage = ({ value }: { value: string }) => {
   const [feedbackValue, setFeedbackValue] = useState<"good" | "bad" | null>(
     null
   );
-  const { trackFeedback } = useAppState();
+  const { trackEvent } = useAppState();
   const handleFeedback = (value: "good" | "bad" | null) => {
     if (value === feedbackValue) return;
     setFeedbackValue(value);
-    trackFeedback(value);
+    trackEvent({
+      eventName: value === "good" ? Events.feedbackGood : Events.feedbackBad,
+      eventData: {
+        message: value,
+      },
+    });
   };
   return (
     <div className="tw:flex-col tw:flex tw:gap-2">
-      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
-        Zen Citizen
-      </div>
+      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">Spashta</div>
       <div className="message-text response-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-3.5 tw:py-2 tw:rounded-lg tw:text-left ">
         <div className="tw:text-left tw:mb-2!">
           <button

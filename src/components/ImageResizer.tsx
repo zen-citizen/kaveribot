@@ -2,8 +2,11 @@ import { useState, useRef } from "react";
 import imageCompression from "browser-image-compression";
 import { Footer } from "./ModalComponents";
 import { CircleCheckIcon } from "lucide-react";
+import { Events } from "../hooks/useEventTracker";
+import { useAppState } from "../AppState";
 
 const ImageResizer = () => {
+  const { trackEvent } = useAppState();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [maxSize, setMaxSize] = useState<number>(1.5);
   const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(
@@ -140,6 +143,7 @@ const ImageResizer = () => {
       const compressedUrl = URL.createObjectURL(compressedFile);
 
       setProcessedImageUrl(compressedUrl);
+      trackEvent({ eventName: Events.imageResized, eventData: null })
       setImageInfo((prev) => ({
         ...prev,
         processedSize: formatBytes(compressedFile.size, 0),
@@ -154,7 +158,7 @@ const ImageResizer = () => {
 
   const downloadImage = () => {
     if (!processedImageUrl) return;
-
+    trackEvent({ eventName: Events.imageResizeDownloaded, eventData: null })
     const link = document.createElement("a");
     link.href = processedImageUrl;
     link.download = `processed_${
