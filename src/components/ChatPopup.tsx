@@ -145,7 +145,7 @@ const ChatPopup = () => {
             strokeWidth={1.5}
           />
           <h2 className="tw:text-md tw:font-semibold tw:text-white tw:mb-0 tw:whitespace-nowrap">
-            Ask Zen Citizen
+            Ask Spashta
           </h2>
         </div>
         <span className="tw:px-2 tw:py-0.5 tw:rounded-sm tw:text-sm tw:text-zinc-700 tw:bg-white">

@@ -82,15 +82,13 @@ export const BotMessage = ({ value }: { value: string }) => {
     trackEvent({
       eventName: value === "good" ? Events.feedbackGood : Events.feedbackBad,
       eventData: {
-        message: value
-      }
+        message: value,
+      },
     });
   };
   return (
     <div className="tw:flex-col tw:flex tw:gap-2">
-      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
-        Zen Citizen
-      </div>
+      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">Spashta</div>
       <div className="message-text response-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-3.5 tw:py-2 tw:rounded-lg tw:text-left ">
         <div className="tw:text-left tw:mb-2!">
           <button

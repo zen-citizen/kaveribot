@@ -1,4 +1,4 @@
-# Changelog for "Ask Zen Citizen" bot
+# Changelog for "Spashta" bot
 
 ## v2.0.0 [to be released]
 
