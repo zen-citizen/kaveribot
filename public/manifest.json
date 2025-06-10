@@ -14,7 +14,7 @@
     "48": "zc-logo.png",
     "128": "zc-logo.png"
   },
-  "permissions": ["sidePanel", "tabs"],
+  "permissions": ["sidePanel"],
   "commands": {
     "_execute_action": {
       "suggested_key": {
