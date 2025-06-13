@@ -1,6 +1,16 @@
 # Changelog for "Spashta" bot
 
-## v2.0.0 [to be released]
+## v2.1.0 [tbd]
+
+Extension version: v1.1 (Ask Spashta)
+
+- Improvements and bug-fixes to image-resizer.
+
+### Other updates
+
+## v2.0.0 [2025-06-09]
+
+Extension version: v1.0 (Ask Spashta)
 
 ### User updates
 
