@@ -1,15 +1,70 @@
 @import "tailwindcss" prefix(tw);
 @import "./assets/markdown.css";
 
-#kaveri-bot-app, #kaveri-bot-app > *  {
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+#kaveri-bot-app,
+#kaveri-bot-app > * {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
   font-size: 16px !important;
 }
 
-.message-text > * + * {
-  margin-top: 1.5em;
+.message-text {
+  @apply tw:space-y-5;
+  line-height: 1.5;
 }
 
-.message-text {
-  line-height: 1.5;
+/* Sidepanel transitions */
+.chatbot-sidepanel {
+  transition: transform 0.3s ease-in-out;
+  height: 100vh;
+  /* box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1); */
+}
+
+#chatbot-toggler {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Shift website content
+body {
+  transition: margin-right 0.3s ease-in-out;
+  margin-right: 0;
+}
+
+html.kaveri-bot-active body > *:not(#kaveri-bot-app) {
+  transition: margin-right 0.3s ease-in-out;
+  margin-right: min(calc(100vw - 32px), 360px);
+} */
+
+#azc-btn {
+  @apply tw:fixed! tw:bottom-[35%]! tw:right-[1.1rem]! tw:bg-zinc-700! tw:text-white! tw:p-3! tw:cursor-pointer! tw:focus:outline-none! tw:rounded-t-lg! tw:flex! tw:items-center! tw:justify-center! tw:gap-x-2!;
+  transform: rotate(-90deg);
+  transform-origin: right;
+  z-index: 100000;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  font-size: 14px !important;
+}
+#azc-btn span.arrow::after {
+  content: "▲";
+  @apply tw:inline-flex! tw:items-center! tw:justify-center! tw:text-white! tw:w-3! tw:h-3! tw:text-sm!;
+  transform: rotate(0deg);
+}
+#azc-btn.open span.arrow::after {
+  transform: rotate(180deg);
+}
+.show-with-delay {
+  opacity: 0;
+  animation: fadeIn 3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

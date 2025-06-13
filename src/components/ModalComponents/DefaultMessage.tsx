@@ -1,11 +1,9 @@
 export const DefaultMessage = () => {
   return (
     <div className="tw:flex-col tw:flex tw:gap-2">
-      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">
-        Zen Citizen Bot
-      </div>
+      <div className="tw:text-gray-500 tw:text-xs tw:font-medium">Spashta</div>
       <div className="message-text tw:text-sm tw:text-gray-800 tw:bg-white tw:px-5 tw:rounded-lg tw:text-left tw:py-4">
-        <p>Hi! 👋</p>
+        <p>Namaskara! 🙏</p>
         <p>
           We’re{" "}
           <a
@@ -21,6 +19,10 @@ export const DefaultMessage = () => {
           This chatbot shares tips and answers questions on registering a Hindu
           marriage online on the Kaveri portal.
           <em> We plan to expand to more services soon.</em>
+        </p>
+        <p className="tw:text-xs tw:font-semibold tw:text-gray-400 tw:leading-[1.5] tw:mb-2!">
+          Please do not share any sensitive information such as Aadhaar number,
+          address, or contact details in the chat.
         </p>
         <p className="tw:text-xs tw:font-semibold tw:text-gray-400 tw:leading-[1.5] tw:mb-0!">
           AI is occasionally inaccurate. Always verify important information.

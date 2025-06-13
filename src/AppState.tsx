@@ -1,11 +1,25 @@
 import { createContext, useContext } from "react";
+import { Events } from "./hooks/useEventTracker";
+type Message =
+  | {
+      text: string;
+      audio?: never;
+    }
+  | { audio: string; text?: never };
 
 type AppContext = {
-  messages: Array<{ role: string; message: string }>;
+  messages: Array<{ role: string; message: Message }>;
   featureFlags: {
     langSupport: boolean;
   };
-  setMessages: (messages: Array<{ role: string; message: string }>) => void;
+  setMessages: (
+    messages: Array<{
+      role: string;
+      message: Message;
+    }>
+  ) => void;
+  sessionId: string;
+  trackEvent: (args: { eventName: Events, eventData: any }) => any,
 };
 
 const AppState = createContext<AppContext>({
@@ -14,6 +28,8 @@ const AppState = createContext<AppContext>({
     langSupport: false,
   },
   setMessages: () => {},
+  sessionId: Math.random().toString(36).substring(2, 15),
+  trackEvent: () => {},
 });
 
 const useAppState = () => {
@@ -24,4 +40,4 @@ const useAppState = () => {
   return context;
 };
 
-export { AppState, useAppState, type AppContext };
+export { AppState, type Message, useAppState, type AppContext };

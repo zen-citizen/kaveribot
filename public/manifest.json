@@ -1,18 +1,40 @@
 {
   "manifest_version": 3,
-  "name": "Ask Zen Citizen",
+  "name": "Ask Spashta",
   "version": "1.1",
   "description": "Get AI-powered assistance for marriage registration on Kaveri portal. (Unaffiliated with the Government of Karnataka)",
-  "action": {
-    "default_popup": "index.html"
+  "background": {
+    "service_worker": "service-worker.js"
   },
-  "permissions": ["storage"],
-  "host_permissions": ["https://kaveri.karnataka.gov.in/*"],
+  "action": {
+    "default_title": "Click to open Spashta"
+  },
+  "icons": {
+    "16": "zc-logo.png",
+    "48": "zc-logo.png",
+    "128": "zc-logo.png"
+  },
+  "permissions": ["sidePanel"],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+B",
+        "mac": "Command+B"
+      }
+    }
+  },
   "content_scripts": [
     {
-      "matches": ["https://kaveri.karnataka.gov.in/*"],
-      "js": ["assets/index.js"],
-      "css": ["assets/index.css"]
+      "matches": ["https://kaveri.karnataka.gov.in/*", "https://zencitizen.in/*"],
+      "css": ["assets/index.css"],
+      "js": ["cta.js"]
     }
-  ]
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["iframe.html", "perm.js", "cta.js"],
+      "matches": ["https://kaveri.karnataka.gov.in/*", "https://zencitizen.in/*"]
+    }
+  ],
+  "host_permissions": ["https://kaveri.karnataka.gov.in/*", "https://zencitizen.in/*" ]
 }

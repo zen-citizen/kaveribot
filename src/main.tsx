@@ -1,6 +1,6 @@
 /**
 
-"Ask Zen Citizen" Copyright (C) 2025 Zen Citizen
+"Spashta" Copyright (C) 2025 Zen Citizen
 
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
@@ -15,6 +15,7 @@ import App from "./App.tsx";
 const container = document.createElement("div");
 container.id = "react-root";
 document.body.appendChild(container);
+
 
 createRoot(container).render(
   <StrictMode>

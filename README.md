@@ -1,12 +1,12 @@
 ## To run (for local development):
 
-1. `npm install`
-2. `npm run dev`
+1. `yarn`
+2. `yarn dev`
 3. Open localhost
 
 ## To build for extension:
 
-1. `npm run build`
+1. `yarn build`
 
 The extension files will be in `dist` folder.
 
@@ -16,7 +16,7 @@ The extension files will be in `dist` folder.
 - From settings, go to `Extensions -> Manage Extensions`
 - Click `Load unpacked` and select the `dist` folder in this project
 - If the extension loaded successfully, you should see `Kaveri Bot` in your extensions list.
-- Go to `kaveri.karnataka.gov.in` and you'll see the bot.
+- Go to `kaveri.karnataka.gov.in` and click on the "Ask Spashta" button and you'll see the bot open up on the sidepanel.
 
 ## To create a new release of the extension (zip file):
 
