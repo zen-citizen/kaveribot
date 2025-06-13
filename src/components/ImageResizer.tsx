@@ -8,14 +8,13 @@ import { useAppState } from "../AppState";
 const ImageResizer = () => {
   const { trackEvent } = useAppState();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [maxSize, setMaxSize] = useState<number>(1.5);
-  const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(
-    null
-  );
+  const [progress, setProgress] = useState<number>(0);
+  const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
   const [imageInfo, setImageInfo] = useState<{
     originalSize?: string;
     processedSize?: string;
+    processedDimensions?: string;
     dimensions?: string;
   }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,21 +24,21 @@ const ImageResizer = () => {
   const targetHeight = 1890;
 
   const formatBytes = (bytes: number, decimals = 2) => {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB"];
+    const sizes = ['Bytes', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setSelectedFile(file);
-      setImageInfo((prev) => ({
+      setImageInfo(prev => ({
         ...prev,
-        originalSize: formatBytes(file.size),
+        originalSize: formatBytes(file.size)
       }));
       await processImage(file);
     }
@@ -56,9 +55,9 @@ const ImageResizer = () => {
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
       setSelectedFile(file);
-      setImageInfo((prev) => ({
+      setImageInfo(prev => ({
         ...prev,
-        originalSize: formatBytes(file.size),
+        originalSize: formatBytes(file.size)
       }));
       await processImage(file);
     }
@@ -68,19 +67,9 @@ const ImageResizer = () => {
     fileInputRef.current?.click();
   };
 
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value);
-    setMaxSize(newValue);
-
-    // Reprocess image when slider changes
-    if (selectedFile) {
-      processImage(selectedFile);
-    }
-  };
-
   const processImage = async (file: File) => {
-    if (!file.type.includes("image")) {
-      alert("Please select an image file");
+    if (!file.type.includes('image')) {
+      alert('Please select an image file');
       return;
     }
 
@@ -90,12 +79,12 @@ const ImageResizer = () => {
       // Create an image element to get original dimensions
       const img = new Image();
       const imgUrl = URL.createObjectURL(file);
-
+      
       await new Promise<void>((resolve) => {
         img.onload = () => {
-          setImageInfo((prev) => ({
+          setImageInfo(prev => ({
             ...prev,
-            dimensions: `${img.width}x${img.height}`,
+            dimensions: `${img.width}x${img.height}`
           }));
           resolve();
         };
@@ -103,54 +92,65 @@ const ImageResizer = () => {
       });
 
       // Resize the image to B2 dimensions
-      const canvas = document.createElement("canvas");
+      const canvas = document.createElement('canvas');
       canvas.width = targetWidth;
       canvas.height = targetHeight;
-      const ctx = canvas.getContext("2d");
-
+      const ctx = canvas.getContext('2d');
+      
       if (!ctx) {
-        throw new Error("Could not get canvas context");
+        throw new Error('Could not get canvas context');
       }
 
       ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
+      
       // Convert to PNG format
       const resizedBlob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob((blob) => {
           if (blob) resolve(blob);
-          else reject(new Error("Failed to create blob"));
-        }, "image/png");
+          else reject(new Error('Failed to create blob'));
+        }, 'image/png');
       });
 
       // Create a File object from the Blob
-      const resizedFile = new File(
-        [resizedBlob],
-        `${file.name.split(".")[0]}.png`,
-        {
-          type: "image/png",
-          lastModified: new Date().getTime(),
-        }
-      );
+      const resizedFile = new File([resizedBlob], `${file.name.split('.')[0]}.png`, { 
+        type: 'image/png',
+        lastModified: new Date().getTime()
+      });
+
+      const maxSize = 1.9;
 
       // Compress the image
       const options = {
         maxSizeMB: maxSize,
-        maxWidthOrHeight: Math.max(targetWidth, targetHeight),
+        maxIteration: 100,
+        alwaysKeepResolution: true,
         useWebWorker: true,
+        onProgress: (p: number) => {
+          setProgress(p);
+        },
+        // useWebWorker: true,
       };
 
-      const compressedFile = await imageCompression(resizedFile, options);
-      const compressedUrl = URL.createObjectURL(compressedFile);
+      const compressedFile = resizedFile.size > (maxSize * 1024 * 1024) ? await imageCompression(resizedFile, options) : resizedFile;
 
+      // const compressedFile = resizedFile
+      const compressedUrl = URL.createObjectURL(compressedFile);
+      
       setProcessedImageUrl(compressedUrl);
-      trackEvent({ eventName: Events.imageResized, eventData: null })
-      setImageInfo((prev) => ({
-        ...prev,
-        processedSize: formatBytes(compressedFile.size, 0),
-      }));
+      const i = new Image();
+      i.src = compressedUrl;
+      i.onload = () => {
+        setImageInfo(prev => ({
+          ...prev,
+          processedDimensions: `${i.width}x${i.height}`,
+          processedSize: formatBytes(compressedFile.size)
+        }));
+      };
+
+      trackEvent({ eventName: Events.imageResized, eventData: null });
     } catch (error) {
-      console.error("Error processing image:", error);
-      alert("Error processing image. Please try again.");
+      console.error('Error processing image:', error);
+      alert('Error processing image. Please try again.');
     } finally {
       setProcessing(false);
     }
@@ -158,15 +158,14 @@ const ImageResizer = () => {
 
   const downloadImage = () => {
     if (!processedImageUrl) return;
-    trackEvent({ eventName: Events.imageResizeDownloaded, eventData: null })
-    const link = document.createElement("a");
+    
+    const link = document.createElement('a');
     link.href = processedImageUrl;
-    link.download = `processed_${
-      selectedFile?.name?.split(".")[0] || "image"
-    }.png`;
+    link.download = `processed_${selectedFile?.name?.split('.')[0] || 'image'}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    trackEvent({ eventName: Events.imageResizeDownloaded, eventData: null });
   };
 
   return (
@@ -253,7 +252,7 @@ const ImageResizer = () => {
             )}
             <div className="tw:text-xs tw:flex tw:flex-col tw:gap-y-1 tw:text-gray-500 tw:text-center">
               <span>
-                New File Size: B2 ({targetWidth} x {targetHeight} px) (
+                New File Size: B2 ({imageInfo.processedDimensions}) (
                 {imageInfo.processedSize})
               </span>
               {/* <span>New file size: {imageInfo.processedSize}</span> */}
@@ -264,7 +263,7 @@ const ImageResizer = () => {
         {/* Status message */}
         {processing && (
           <div className="tw:text-gray-500 tw:text-center">
-            Processing image...
+            Processing image ({progress || 0}%)...
           </div>
         )}
 
