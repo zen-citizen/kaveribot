@@ -19,7 +19,8 @@ type AppContext = {
     }>
   ) => void;
   sessionId: string;
-  trackEvent: (args: { eventName: Events, eventData: any }) => any,
+  trackEvent: (args: { eventName: Events; eventData: any }) => any;
+  resetMessages: () => void;
 };
 
 const AppState = createContext<AppContext>({
@@ -30,6 +31,7 @@ const AppState = createContext<AppContext>({
   setMessages: () => {},
   sessionId: Math.random().toString(36).substring(2, 15),
   trackEvent: () => {},
+  resetMessages: () => {},
 });
 
 const useAppState = () => {

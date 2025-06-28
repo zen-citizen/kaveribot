@@ -18,22 +18,38 @@ import "./assets/kaveri-logo.png";
 const featureFlags: AppContext["featureFlags"] = { langSupport: false };
 const sessionId = Math.random().toString(36).substring(2, 15);
 
-function App() {
+type MessageWithRole = { role: string; message: Message };
+const storageKey = "ask_spashta_messages";
 
-  const [messages, setMessages] = useState<
-    Array<{ role: string; message: Message }>
-  >([]);
-  
+function App() {
+  const msgs = localStorage.getItem(storageKey) || "[]";
+
+  const [messages, setMessages] = useState<Array<MessageWithRole>>(() => {
+    try {
+      return JSON.parse(msgs) as Array<MessageWithRole>;
+    } catch (e: any) {
+      return [];
+    }
+  });
+
+  const handleSetMessages = (messages: Array<MessageWithRole>) => {
+    setMessages(messages);
+    localStorage.setItem(storageKey, JSON.stringify(messages));
+  };
+
   const { trackEvent } = useEventTracker(sessionId);
-  
+
   return (
     <AppState.Provider
       value={{
         messages,
-        setMessages,
+        setMessages: handleSetMessages,
         featureFlags,
         sessionId,
         trackEvent,
+        resetMessages: () => {
+          handleSetMessages([]);
+        },
       }}
     >
       <BotMessageAudioStoreProvider>
