@@ -14,7 +14,7 @@ import { FormEvent } from "../../types";
 
 interface BodyProps {
   formEvent: FormEvent;
-  messages: RefObject<{ role: string; message: Message }[]>;
+  messages: Array<{ role: string; message: Message }>;
 }
 
 export const Body: React.FC<BodyProps> = ({ formEvent, messages }) => {
@@ -22,7 +22,7 @@ export const Body: React.FC<BodyProps> = ({ formEvent, messages }) => {
     <div>
       <div className="message tw:bot-message tw:flex tw:flex-col tw:gap-6 tw:w-full tw:mb-3">
         <DefaultMessage />
-        {messages.current.map((message, idx) => {
+        {messages.map((message, idx) => {
           return (
             <div key={`${message?.role}-${idx}`}>
               {message.role === "user" && (
